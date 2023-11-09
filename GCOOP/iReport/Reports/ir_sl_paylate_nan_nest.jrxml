@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_sl_paylate_nan_nest" language="groovy" pageWidth="360" pageHeight="595" orientation="Landscape" columnWidth="360" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="684f5dfd-e26c-4f85-ad31-1e7c8b79e40f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="loancontract_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+lncontcoll.description ,
+lncontcoll.ref_collno ,
+mbmembmaster.addr_phone ,
+mbmembmaster.addr_mobilephone
+from lncontcoll
+left join mbmembmaster on mbmembmaster.member_no = lncontcoll.ref_collno
+where  lncontcoll.loancontract_no = $P{loancontract_no}
+order by lncontcoll.ref_collno]]>
+	</queryString>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<field name="REF_COLLNO" class="java.lang.String"/>
+	<field name="ADDR_PHONE" class="java.lang.String"/>
+	<field name="ADDR_MOBILEPHONE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a2107f88-3025-4ef5-a7d9-adb8a294e954" x="0" y="0" width="51" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REF_COLLNO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6b562249-1fb7-45e1-8dd9-3b433cb27568" x="51" y="0" width="309" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESCRIPTION}+"  "
++($F{ADDR_PHONE}==null ? "": $F{ADDR_PHONE} + "  ")
++( $F{ADDR_MOBILEPHONE} ==null ? "": $F{ADDR_MOBILEPHONE})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

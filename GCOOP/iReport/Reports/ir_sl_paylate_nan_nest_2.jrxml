@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_sl_paylate_nan_nest" language="groovy" pageWidth="792" pageHeight="595" orientation="Landscape" columnWidth="792" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="684f5dfd-e26c-4f85-ad31-1e7c8b79e40f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_memberno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_sdate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="an_scountdate" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="an_ecountdate" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\GCOOP_ALL\\CORE\\GCOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+loanmaster.loancontract_no ,
+loanmaster.period_payment ,
+loanmaster.loanapprove_amt ,
+loanmaster.loantype_code  ,
+loanmaster.principal_balance ,
+loanmaster.count_date ,
+lnloantype.prefix ,
+lnloantype.loangroup_code ,
+mbmembmaster.addr_phone ,
+mbmembmaster.addr_mobilephone
+from (
+SELECT LNCONTMASTER.LOANCONTRACT_NO,
+LNCONTMASTER.period_payment ,
+LNCONTMASTER.loanapprove_amt ,
+LNCONTMASTER.loantype_code  ,
+LNCONTMASTER.MEMBER_NO,
+LNCONTMASTER.PRINCIPAL_BALANCE,
+floor(sysdate - lncontmaster.lastpayment_date) as count_date
+FROM LNCONTMASTER
+left join LNUCFCONTRACTTYPE on LNCONTMASTER.CONTRACT_TYPE = LNUCFCONTRACTTYPE.CONTRACT_TYPE
+ WHERE lncontmaster.contract_status > 0
+and lncontmaster.PRINCIPAL_BALANCE > 0
+and lncontmaster.lastpayment_date <= $P{adtm_sdate}
+and lncontmaster.loantype_code not in ('11','25')
+and floor( $P{adtm_sdate} - lncontmaster.lastpayment_date) between $P{an_scountdate} and $P{an_ecountdate}
+union
+SELECT LNCONTMASTER.LOANCONTRACT_NO,
+LNCONTMASTER.period_payment ,
+LNCONTMASTER.loanapprove_amt ,
+LNCONTMASTER.loantype_code  ,
+LNCONTMASTER.MEMBER_NO,
+LNCONTMASTER.PRINCIPAL_BALANCE,
+floor(sysdate - lncontmaster.lastcalint_date) as count_date
+FROM LNCONTMASTER
+left join LNUCFCONTRACTTYPE on LNCONTMASTER.CONTRACT_TYPE = LNUCFCONTRACTTYPE.CONTRACT_TYPE
+ WHERE lncontmaster.contract_status > 0
+and lncontmaster.PRINCIPAL_BALANCE > 0
+and lncontmaster.lastcalint_date <= $P{adtm_sdate}
+and lncontmaster.loantype_code in ('11','25')
+and floor( $P{adtm_sdate} - lncontmaster.lastcalint_date) between $P{an_scountdate} and $P{an_ecountdate}
+union
+SELECT LNCONTMASTER.LOANCONTRACT_NO,
+LNCONTMASTER.period_payment ,
+LNCONTMASTER.loanapprove_amt ,
+LNCONTMASTER.loantype_code  ,
+LNCONTMASTER.MEMBER_NO,
+LNCONTMASTER.PRINCIPAL_BALANCE,
+floor(sysdate - lncontmaster.lastcalint_date) as count_date
+FROM LNCONTMASTER
+left join LNUCFCONTRACTTYPE on LNCONTMASTER.CONTRACT_TYPE = LNUCFCONTRACTTYPE.CONTRACT_TYPE
+ WHERE lncontmaster.contract_status > 0
+and lncontmaster.PRINCIPAL_BALANCE > 0
+and lncontmaster.lastpayment_date is null
+and lncontmaster.lastreceive_date <= $P{adtm_sdate}
+and floor( $P{adtm_sdate} - lncontmaster.lastcalint_date) between $P{an_scountdate} and $P{an_ecountdate}
+) loanmaster
+left join mbmembmaster on mbmembmaster.member_no = loanmaster.member_no
+left join lnloantype on loanmaster.loantype_code = lnloantype.loantype_code
+where  MBMEMBMASTER.member_no = $P{as_memberno}
+order by loanmaster.loantype_code]]>
+	</queryString>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="PERIOD_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="LOANAPPROVE_AMT" class="java.math.BigDecimal"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="COUNT_DATE" class="java.math.BigDecimal"/>
+	<field name="PREFIX" class="java.lang.String"/>
+	<field name="LOANGROUP_CODE" class="java.lang.String"/>
+	<field name="ADDR_PHONE" class="java.lang.String"/>
+	<field name="ADDR_MOBILEPHONE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="4de9a3d1-081a-447d-b154-b8295104d70f" x="39" y="0" width="61" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANCONTRACT_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b00ff821-7cd9-4180-852a-ad735f8de20c" x="0" y="0" width="39" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{LOANTYPE_CODE} == "25" ? "อุ่นใจ" : ( $F{LOANGROUP_CODE} == "01" ? "ฉุกเฉิน("+$F{PREFIX}+")" : ( $F{LOANGROUP_CODE} == "03" ? "พิเศษ("+$F{PREFIX}+")" : ( $F{LOANGROUP_CODE} == "02" ? "สามัญ("+$F{PREFIX}+")" : "อื่นๆ" ) )
+ ))]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="8a7ddbf5-587b-43b1-a3ca-29926d70f761" x="100" y="0" width="75" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANAPPROVE_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="8da750bf-0781-44ce-9fc0-fd76c21f3847" x="175" y="0" width="75" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRINCIPAL_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="2053933c-722b-4b14-bd79-367384885318" x="639" y="0" width="107" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PERIOD_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="67290031-2177-430a-9914-1bbbb77c609c" x="746" y="0" width="46" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COUNT_DATE}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="65aecef4-0e30-4c05-a621-4228a33397be" x="250" y="0" width="389" height="20"/>
+				<subreportParameter name="loancontract_no">
+					<subreportParameterExpression><![CDATA[$F{LOANCONTRACT_NO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "ir_sl_paylate_nan_nest.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

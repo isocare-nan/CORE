@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_dept_max_20" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="455f494d-8d9a-4474-b24a-213ee16d4007">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="adtm_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coop" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from (
+SELECT
+     rank() over ( partition by dpdeptmaster.coop_id order by sum(dpdeptstatement.prncbal) desc,dpdeptmaster.member_no asc ) as num_no,
+	dpdeptmaster.member_no,
+	decode (substr(dpdeptmaster.member_no ,1,3) , '00A', '',mbucfprename.prename_desc) || mbmembmaster.memb_name || '  '|| mbmembmaster.memb_surname as deptaccount_name,
+	sum(dpdeptstatement.prncbal) as prncbal
+    FROM dpdeptmaster,
+	dpdeptstatement,
+	dpdepttype,
+	mbmembmaster,
+	mbucfprename
+   WHERE dpdeptmaster.deptaccount_no = dpdeptstatement.deptaccount_no  and
+	dpdeptstatement.seq_no = (select max(seq_no) from dpdeptstatement where operate_date <= $P{adtm_date} and dpdeptmaster.deptaccount_no= dpdeptstatement.deptaccount_no  ) and
+  	dpdepttype.depttype_code = dpdeptmaster.depttype_code  and
+	dpdeptmaster.member_no = mbmembmaster.member_no and
+	mbmembmaster.prename_code = mbucfprename.prename_code and
+     dpdeptmaster.deptclose_status = 0  AND
+     dpdeptmaster.coop_id = $P{as_coop}
+ group by dpdeptmaster.coop_id ,
+			dpdeptmaster.member_no ,
+			mbucfprename.prename_desc ,
+			mbmembmaster.memb_name ,
+			mbmembmaster.memb_surname
+)where num_no <= 1000
+order by num_no asc]]>
+	</queryString>
+	<field name="NUM_NO" class="java.math.BigDecimal"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="DEPTACCOUNT_NAME" class="java.lang.String"/>
+	<field name="PRNCBAL" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="697cad06-da2d-48f8-8f77-989aeb5f300d" x="0" y="0" width="802" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานเงินรับฝากรายใหญ่ ณ ปัจจุบัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="69bdf76d-e92d-4765-b820-852d98b8989d" x="0" y="25" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7ed6c2c4-ba91-4fe2-a31e-252046d2ba47" x="128" y="25" width="396" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ชื่อบัญชี]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b8afef3d-768e-4b47-87a0-75c90f404ebb" x="524" y="25" width="113" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd1fa36f-883d-4144-a34d-6a8ca71998b4" x="47" y="25" width="81" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขที่สมาชิก]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="a6ef63db-1ba7-48b7-baac-27c58c4977af" x="491" y="0" width="74" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{adtm_date}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="dae1d43b-2a74-451e-b0bf-8d0e0cf5ade6" x="524" y="0" width="113" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRNCBAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="59d204ed-79f3-48f8-bc63-6b4d15c2dbb7" x="47" y="0" width="81" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="38cc3e6b-529e-4d04-b1e1-02cfc57f7fee" x="128" y="0" width="396" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTACCOUNT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4ee7dacb-9339-4ff1-9561-d0b928202815" x="0" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

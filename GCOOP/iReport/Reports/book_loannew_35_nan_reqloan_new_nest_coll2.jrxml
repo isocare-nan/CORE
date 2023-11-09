@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="book_loannew_34_nan_reqloancoll" language="groovy" pageWidth="360" pageHeight="842" columnWidth="360" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e1d5b3d8-275e-4b82-b4a7-dc0770edacb9">
+	<property name="ireport.zoom" value="1.2100000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_loanrequest_docno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+FT_GETMEMNAME('018001',lnreqloan.member_no) as getname,case when lncontcoll.loancolltype_code = '04' then lncontcoll.description else FT_GETMEMNAME('018001',lncontcoll.ref_collno) end as namecoll,
+lncontcoll.ref_collno
+from
+lnreqloan
+left outer join lncontcoll on trim(lncontcoll.loancontract_no) = trim(lnreqloan.loancontract_no)
+where lnreqloan.coop_id =  $P{as_coopid}
+and lnreqloan.loanrequest_docno in  ($P!{as_loanrequest_docno})
+and lncontcoll.loancolltype_code in ('04')
+order by lnreqloan.loanrequest_docno,lnreqloan.member_no ,lncontcoll.seq_no ASC]]>
+	</queryString>
+	<field name="GETNAME" class="java.lang.String"/>
+	<field name="NAMECOLL" class="java.lang.String"/>
+	<field name="REF_COLLNO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band/>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a109d8af-5beb-40cc-8695-7139833dc06b" x="19" y="0" width="341" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[...................................................................................................เลขที่.........................]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d127a590-9204-44d5-8c3f-7e6546f39cca" x="19" y="-3" width="243" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAMECOLL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6a3a070c-0ec6-4b05-9d00-2c8e14aab261" x="0" y="0" width="19" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}+"."]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="62da0175-edfd-4be1-8a67-038f8839f50f" x="285" y="-2" width="72" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REF_COLLNO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

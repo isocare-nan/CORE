@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_ln_max_50_new" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5de4fa6f-55aa-48d5-8afe-703d25ac4ef5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="adtm_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coop" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+mbmembmaster.card_person ,
+mbmembmaster.member_type ,
+mbucfprename.prename_desc ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+lnloantype.loantype_desc ,
+lncontmaster.loancontract_no ,
+lncontmaster.startcont_date ,
+lncontmaster.period_payamt ,
+add_months( lncontmaster.startcont_date , lncontmaster.period_payamt ) as duel_date ,
+ft_getintrate( lncontmaster.coop_id , lncontmaster.int_continttabcode , lncontmaster.loanapprove_amt , lncontmaster.startcont_date ) as intrate ,
+maxloan.approve ,
+lncontstatement.period ,
+lncontstatement.principal_balance
+from
+( select * from ( select lm.member_no , sum( lm.loanapprove_amt ) as approve
+	from lncontmaster lm , lncontstatement lcs ,
+	(
+		select s.coop_id , s.loancontract_no , max( s.seq_no ) as seq_no
+		from lncontstatement s
+		where  s.slip_date <= $P{adtm_date}
+		and s.item_status = 1
+		group by s.coop_id , s.loancontract_no
+	) ls
+	where lm.coop_id = ls.coop_id
+	and lm.loancontract_no = ls.loancontract_no
+	and ls.coop_id = lcs.coop_id
+	and ls.loancontract_no = lcs.loancontract_no
+	and ls.seq_no = lcs.seq_no
+	and lcs.principal_balance > 0
+group by lm.member_no
+order by approve desc  )  master where rownum <= 50 ) maxloan
+left join lncontmaster on maxloan.member_no = lncontmaster.member_no
+left join lncontstatement on lncontstatement.loancontract_no = lncontmaster.loancontract_no and lncontstatement.seq_no =	(
+		select  max( s.seq_no ) as seq_no
+		from lncontstatement s
+		where  s.slip_date <= $P{adtm_date}
+		and s.item_status = 1
+		and s.loancontract_no = lncontmaster.loancontract_no
+		group by  s.loancontract_no
+	)
+left join mbmembmaster on maxloan.member_no = mbmembmaster.member_no
+left join lnloantype on lncontmaster.loantype_code = lnloantype.loantype_code
+left join mbucfmembgroup on trim( mbucfmembgroup.membgroup_code ) = trim( mbmembmaster.membgroup_code )
+left join mbucfprename on mbucfprename.prename_code = mbmembmaster.prename_code
+where lncontmaster.principal_balance > 0
+order by maxloan.approve desc , lncontmaster.loantype_code]]>
+	</queryString>
+	<field name="CARD_PERSON" class="java.lang.String"/>
+	<field name="MEMBER_TYPE" class="java.math.BigDecimal"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="LOANTYPE_DESC" class="java.lang.String"/>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="STARTCONT_DATE" class="java.sql.Timestamp"/>
+	<field name="PERIOD_PAYAMT" class="java.math.BigDecimal"/>
+	<field name="DUEL_DATE" class="java.sql.Timestamp"/>
+	<field name="INTRATE" class="java.math.BigDecimal"/>
+	<field name="APPROVE" class="java.math.BigDecimal"/>
+	<field name="PERIOD" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4134afeb-cd23-4390-ac6f-ee774eded14e" x="203" y="2" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[DUEL_DATE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement uuid="5f934362-af39-4e0a-bcd7-7945d8c11f78" x="203" y="45" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DUEL_DATE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

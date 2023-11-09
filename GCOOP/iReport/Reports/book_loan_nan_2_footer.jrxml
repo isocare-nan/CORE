@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="book_loan_nan_2" language="groovy" pageWidth="798" pageHeight="799" columnWidth="798" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="12f204a6-55c9-45e7-b353-ba2c17fad1e2">
+	<property name="ireport.zoom" value="1.2418426461183203"/>
+	<property name="ireport.x" value="10"/>
+	<property name="ireport.y" value="139"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_loanrequest_docno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\GCOOP_ALL\\CORE\\GCOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_name" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select LNR.COOP_ID,
+LC.LOANREQUEST_DOCNO,LC.MEMBER_NO,
+PRE.PRENAME_DESC||MB.MEMB_NAME||'  '||MB.MEMB_SURNAME as NAME_FULL,MB.POSITION_DESC,
+TRIM(MB.MEMBGROUP_CODE) as MEMBGROUP_CODE,TRIM(GR.MEMBGROUP_DESC) as MEMBGROUP_DESC,MST.DISTRICT_DESC,
+(select b.MEMBGROUP_DESC from
+
+ MBUCFMEMBGROUP a,(select
+ "MBUCFMEMBGROUP_A"."MEMBGROUP_CONTROL",
+ "MBUCFMEMBGROUP_B"."MEMBGROUP_DESC"
+from  "MBUCFMEMBGROUP" "MBUCFMEMBGROUP_A",
+         "MBUCFMEMBGROUP" "MBUCFMEMBGROUP_B"
+where
+(mbucfmembgroup_a.membgroup_control = mbucfmembgroup_b.membgroup_code(+) )
+group by  "MBUCFMEMBGROUP_A"."MEMBGROUP_CONTROL",
+ "MBUCFMEMBGROUP_B"."MEMBGROUP_DESC") b
+where a.MEMBGROUP_CONTROL = b.MEMBGROUP_CONTROL and
+trim(a.MEMBGROUP_Code) = TRIM(MB.MEMBGROUP_CODE)) GG,
+LC.LOANAPPROVE_AMT,LC.PERIOD_INSTALLMENT,LC.PERIOD_PAYMENT,LC.STARTKEEP_PERIOD,
+LC.LOANAPPROVE_DATE,LNU.LOANOBJECTIVE_DESC,LNR.IDENTIFYCONT_INTRATE,
+LC.LOANCONTRACT_NO,
+FTREADTBAHT(LC.LOANAPPROVE_AMT) as LOANAPPROVE_AMT1,
+FTREADTNUM(LC.PERIOD_payamt) as PERIOD_INSTALLMENT1,
+FTREADTBAHT(LC.PERIOD_PAYMENT) as PERIOD_PAYMENT1,
+FTCNVTDATE(TO_DATE(LC.LOANAPPROVE_DATE),5) as APPROVE_DATE,
+FTCNVTDATE(TO_DATE(LNR.LOANREQUEST_DATE),5) as LOANREQUEST_DATE,
+$P{as_name}  as NAMEPRINT,
+(
+case
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '1'  then 'มกราคม'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '2'  then 'กุมภาพันธ์'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '3'  then 'มีนาคม'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '4'  then 'เมษายน'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '5'  then 'พฤษภาคม'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '6'  then 'มิถุนายน'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '7'  then 'กรกฎาคม'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '8'  then 'สิงหาคม'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '9'  then 'กันยายน'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '10'  then 'ตุลาคม'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '11'  then 'พฤศจิกายน'
+when extract( month from ( case when extract(day from LC.startcont_date ) <= AA.postingdate then add_months( LC.startcont_date , 1)  else add_months( LC.startcont_date , 2) end ) )  = '12'  then 'ธันวาคม'
+end
+) as months
+,
+( extract( year from ( case when extract(day from LC.startcont_date  ) <= 16 then add_months(  LC.startcont_date  , 1)  else add_months(  LC.startcont_date  , 1) end ) ) + 543 ) as year
+
+from LNCONTMASTER LC
+left join amworkcalendar AA on AA.month = extract( month from LC.startcont_date  ) and  AA.year = extract( year from LC.startcont_date  ) +543
+left join MBMEMBMASTER MB on LC.MEMBER_NO = MB.MEMBER_NO
+left join MBUCFPRENAME PRE on MB.PRENAME_CODE = PRE.PRENAME_CODE
+left join MBUCFMEMBGROUP GR on TRIM(MB.MEMBGROUP_CODE) = TRIM(GR.MEMBGROUP_CODE)
+left join MBUCFDISTRICT MST on MST.DISTRICT_CODE = GR.ADDR_AMPHUR
+left join LNREQLOAN LNR on LNR.LOANREQUEST_DOCNO = LC.LOANREQUEST_DOCNO
+left join LNUCFLOANOBJECTIVE LNU on TRIM(LNU.LOANOBJECTIVE_CODE) = TRIM(LNR.LOANOBJECTIVE_CODE) and LNU.LOANTYPE_CODE = LNR.LOANTYPE_CODE
+where LNR.COOP_ID = $P{as_coopid} and trim(LC.loanrequest_docno) in ( $P!{as_loanrequest_docno} )
+order by LC.LOANCONTRACT_NO,LC.MEMBER_NO ASC]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="LOANREQUEST_DOCNO" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="NAME_FULL" class="java.lang.String"/>
+	<field name="POSITION_DESC" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="DISTRICT_DESC" class="java.lang.String"/>
+	<field name="GG" class="java.lang.String"/>
+	<field name="LOANAPPROVE_AMT" class="java.math.BigDecimal"/>
+	<field name="PERIOD_INSTALLMENT" class="java.math.BigDecimal"/>
+	<field name="PERIOD_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="STARTKEEP_PERIOD" class="java.lang.String"/>
+	<field name="LOANAPPROVE_DATE" class="java.sql.Timestamp"/>
+	<field name="LOANOBJECTIVE_DESC" class="java.lang.String"/>
+	<field name="IDENTIFYCONT_INTRATE" class="java.math.BigDecimal"/>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="LOANAPPROVE_AMT1" class="java.lang.String"/>
+	<field name="PERIOD_INSTALLMENT1" class="java.lang.String"/>
+	<field name="PERIOD_PAYMENT1" class="java.lang.String"/>
+	<field name="APPROVE_DATE" class="java.lang.String"/>
+	<field name="LOANREQUEST_DATE" class="java.lang.String"/>
+	<field name="NAMEPRINT" class="java.lang.String"/>
+	<field name="MONTHS" class="java.lang.String"/>
+	<field name="YEAR" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="509" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="247488fc-367c-4731-a1aa-131c62402114" x="16" y="16" width="100" height="100"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="09d809be-2b37-40c3-b10e-3c7243519019" x="613" y="13" width="100" height="100"/>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e6c8d7b1-15b7-429c-aed7-1a6b70feaaa1" x="109" y="186" width="118" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANCONTRACT_NO}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="63b61278-10b9-4830-ad8d-ac3d697e7167" x="204" y="54" width="405" height="20"/>
+				<subreportParameter name="coop_id">
+					<subreportParameterExpression><![CDATA[$F{COOP_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="loanrequest_docno">
+					<subreportParameterExpression><![CDATA[$F{LOANREQUEST_DOCNO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOANCONTRACT_NO">
+					<subreportParameterExpression><![CDATA[$F{LOANCONTRACT_NO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "r_sl_loan_print_nan_sub2.jasper"]]></subreportExpression>
+			</subreport>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1a7f5ac6-50ee-47db-ae24-6e38800cf091" x="318" y="186" width="248" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME_FULL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8a30ca5e-fde2-4cae-b672-1945c8babf0e" x="199" y="237" width="286" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME_FULL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="57ea6179-97c1-4e76-9e6d-ce7013d31ea1" x="625" y="237" width="113" height="17"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d64dab36-d594-4a75-b6f3-d556cb002e92" x="185" y="255" width="162" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{POSITION_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3e0a236a-488f-4f21-82b5-f7876ef54080" x="384" y="255" width="140" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBGROUP_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="579b8f58-7914-4f29-868d-0827129474f5" x="418" y="289" width="196" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANAPPROVE_AMT1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="6ae9ab14-bf0b-44a9-9d14-ebf4f9a3adaf" x="86" y="339" width="165" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PERIOD_INSTALLMENT1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b5c5be1d-3184-464e-9d0e-81f017687777" x="338" y="339" width="231" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PERIOD_PAYMENT1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9d5466bd-7c0f-467d-83b2-b2c6abb9d7f8" x="351" y="322" width="226" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PERIOD_PAYMENT1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="450191e7-efe2-4ac1-9e4c-7a5deeef17ae" x="645" y="322" width="83" height="17"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["5.90"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1310c898-df30-4583-9223-1123558e4b2f" x="132" y="356" width="172" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MONTHS}+ '  พ.ศ. ' +$F{YEAR}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fdf2d525-7584-408c-a6e7-46295cc231ff" x="298" y="389" width="243" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANOBJECTIVE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="2754d781-21f7-4525-a0a1-273087992bab" x="284" y="289" width="98" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANAPPROVE_AMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bbbe4229-f349-41c3-b06a-b123a546b812" x="563" y="255" width="163" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GG}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9d38d82a-0db9-47fb-89c3-da0155ab61fc" x="318" y="203" width="190" height="17"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANREQUEST_DATE}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement uuid="60a97e98-b899-4bc6-a460-a5bf5752a875" x="703" y="103" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="f8bcb981-0c55-40f2-a13d-ba7dd167a936" x="613" y="13" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="024c2ee4-5184-48da-945f-56347bb939c3" x="703" y="13" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="5e55698a-f34e-4303-a075-5e169359b45e" x="613" y="103" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="0533e0e8-2059-4706-8f3d-2cd8f1710455" x="16" y="16" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="910e256a-d49b-4b72-8e29-6861997b6835" x="16" y="106" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="3ccb4812-3512-4545-a503-593949efd458" x="106" y="106" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="6f4835e1-d10e-4102-849a-eac267bb0da2" x="106" y="16" width="10" height="10"/>
+			</rectangle>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="130">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="235a8e5c-9ffc-4938-8307-a9562b9aefce" x="338" y="10" width="137" height="17"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAMEPRINT}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement uuid="a15d3c91-9202-4ae9-be9b-9fca99473e29" x="227" y="7" width="100" height="100"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="866897ae-fce2-4fe7-ad59-0ab9545e7012" x="227" y="97" width="10" height="10"/>
+			</rectangle>
+		</band>
+	</pageFooter>
+</jasperReport>

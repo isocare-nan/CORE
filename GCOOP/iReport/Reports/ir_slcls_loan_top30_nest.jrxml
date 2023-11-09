@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_slcls_loan_top30_nest" language="groovy" pageWidth="324" pageHeight="842" columnWidth="324" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7bea3e94-493b-4a2a-8893-5540350c55ce">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="recv_period" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_membno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+slclsmthbalance.loancontract_no ,
+lncontmaster.loanapprove_amt ,
+slclsmthbalance.balance_value ,
+lncontmaster.startcont_date ,
+lncfloanintratedet.interest_rate
+from slclsmthbalance
+left join lncontmaster on slclsmthbalance.loancontract_no = lncontmaster.loancontract_no
+left join lnloantype on lncontmaster.loantype_code = lnloantype.loantype_code
+left join lncfloanintratedet on lnloantype.inttabrate_code = lncfloanintratedet.loanintrate_code and sysdate between lncfloanintratedet.effective_date and lncfloanintratedet.expire_date
+where slclsmthbalance.clsmth_period = $P{recv_period}
+and slclsmthbalance.bizz_system = 'LON'
+and slclsmthbalance.member_no = $P{as_membno}]]>
+	</queryString>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="LOANAPPROVE_AMT" class="java.math.BigDecimal"/>
+	<field name="BALANCE_VALUE" class="java.math.BigDecimal"/>
+	<field name="STARTCONT_DATE" class="java.sql.Timestamp"/>
+	<field name="INTEREST_RATE" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9339d765-a383-48ce-9e18-21ef8a7bd632" x="0" y="0" width="64" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANCONTRACT_NO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="6b86b26a-3de0-4394-9404-21d7be640b5d" x="164" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANAPPROVE_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ceae3045-bb9c-4c15-87c1-995b07328891" x="244" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BALANCE_VALUE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d81af9b6-2d41-4a5b-a8ad-c1e7d9df3e33" x="64" y="0" width="67" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format($F{STARTCONT_DATE})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d82cd505-38ac-4588-9fa9-f2ec7c27891d" x="131" y="0" width="33" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INTEREST_RATE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="1">
+			<line>
+				<reportElement uuid="636df5cb-9a5e-4c7c-86a7-b496b3cffc92" x="0" y="0" width="324" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

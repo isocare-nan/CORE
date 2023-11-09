@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mbshr_cover" language="groovy" pageWidth="648" pageHeight="309" columnWidth="648" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="3f96a6ef-3534-4107-baae-f5083885dff1">
+	<property name="ireport.zoom" value="1.2100000000000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_membno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+mbmembmaster.member_no ,
+mbucfprename.prename_desc ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+mbucfprovince.province_desc ,
+mbucfdistrict.district_desc ,
+nvl(mbucftambol.tambol_desc ,0 ) as tambol_desc ,
+nvl(mbmembmaster.curraddr_no , 0 ) as addr_no ,
+nvl(mbmembmaster.curraddr_soi , 0 ) as addr_soi ,
+nvl(mbmembmaster.curraddr_road , 0 ) as addr_road ,
+nvl(mbmembmaster.curraddr_moo , 0 ) as addr_moo ,
+nvl(mbmembmaster.curraddr_village , 0 ) as addr_village ,
+nvl(mbmembmaster.curraddr_postcode , 0 ) as addr_postcode
+from mbmembmaster
+left join mbucfprename mbprename on mbmembmaster.prename_code = mbprename.prename_code
+left join mbucfprename on mbmembmaster.prename_code = mbucfprename.prename_code
+left join mbucfprovince on mbmembmaster.currprovince_code = mbucfprovince.province_code
+left join mbucfdistrict on mbmembmaster.curramphur_code = mbucfdistrict.district_code
+left join mbucftambol on mbmembmaster.currtambol_code = mbucftambol.tambol_code
+where mbmembmaster.coop_id = $P{as_coopid}
+and mbmembmaster.member_no like $P{as_membno}]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="DISTRICT_DESC" class="java.lang.String"/>
+	<field name="TAMBOL_DESC" class="java.lang.String"/>
+	<field name="ADDR_NO" class="java.lang.String"/>
+	<field name="ADDR_SOI" class="java.lang.String"/>
+	<field name="ADDR_ROAD" class="java.lang.String"/>
+	<field name="ADDR_MOO" class="java.lang.String"/>
+	<field name="ADDR_VILLAGE" class="java.lang.String"/>
+	<field name="ADDR_POSTCODE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="253" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="da92277a-55f9-4ca8-8ced-2985e3da3d48" x="236" y="120" width="355" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}+$F{MEMB_NAME}+"  "+$F{MEMB_SURNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="003261bc-856b-4646-9d60-4f244104c328" x="236" y="180" width="355" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DISTRICT_DESC} == null || $F{DISTRICT_DESC} == "null" || $F{DISTRICT_DESC} == "" ? "" : "อำเภอ" + $F{DISTRICT_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3eeb2b6b-305e-4d68-b2a2-7b512d7e5197" x="236" y="200" width="355" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCE_DESC} == null || $F{PROVINCE_DESC} == "null" || $F{PROVINCE_DESC} == "" ? "" : "จังหวัด" + $F{PROVINCE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="813e6402-4964-4c3d-a77e-776033d543f0" x="236" y="220" width="355" height="33"/>
+				<textElement>
+					<font fontName="Angsana New" size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADDR_POSTCODE} == "0" ? "" : $F{ADDR_POSTCODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f21c2596-2f6b-4ac7-a46a-fdf1a54432f8" x="236" y="160" width="355" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{TAMBOL_DESC}.trim() == "0"  ? " " : " ตำบล" + $F{TAMBOL_DESC}.trim())]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="eac07d3d-3541-4fe8-b6d1-00546e328295" x="236" y="140" width="355" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{ADDR_NO}.trim() == "0" ? " " : "บ้านเลขที่ " + $F{ADDR_NO}.trim())+
+($F{ADDR_MOO}.trim() == "0" ? " " : " หมู่ " + $F{ADDR_MOO}.trim()) +
+($F{ADDR_SOI}.trim() == "0"  ? " " : " ซอย " + $F{ADDR_SOI}.trim()) +
+($F{ADDR_ROAD}.trim() == "0"  ? " " : " ถนน " + $F{ADDR_ROAD}.trim())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d388eb43-05e4-4ea7-b916-db2a7642a81c" x="198" y="120" width="37" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[เรียน]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="c9a45d90-6dd1-43ee-9b09-ebde0d16b54c" x="42" y="30" width="80" height="80"/>
+				<imageExpression><![CDATA["C:\\GCOOP_ALL\\NAN\\logo2gray.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="dc1141f4-dddd-4fad-ae09-27936ba8ca4c" x="146" y="30" width="478" height="29"/>
+				<textElement>
+					<font fontName="Angsana New" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[สหกรณ์ออมทรัพย์ครูน่าน จำกัด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f9d5255f-bbcf-42e7-8f5e-32c398043aaf" x="146" y="59" width="478" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[เลขที่ 537 หมู่ที่ 5 ถนนน่าน – ทุ่งช้าง ตำบลผาสิงห์ อำเภอเมือง จังหวัดน่าน 55000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c3933dcd-911d-444c-af82-0c25cd64e5ef" x="146" y="79" width="478" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[โทร. (054) 716121-3  Fax. (054) 716131-2 เว็บไซต์ http://www.coopkrunan.com]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="7d9553c7-b83a-4b1a-b381-9c9ae3ba33b9" x="146" y="99" width="478" height="1"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

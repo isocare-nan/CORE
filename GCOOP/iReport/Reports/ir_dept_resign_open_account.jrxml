@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_dept_resign_open_account" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="da30e3a8-7cfb-41cd-81b7-2134bd8fc1b0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_period" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select mbmembmaster.member_no ,
+mbucfprename.prename_desc ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+mbmembmaster.resign_date ,
+dpdeptmaster.deptaccount_no ,
+dpdeptmaster.prncbal
+from mbmembmaster
+left join dpdeptmaster on mbmembmaster.member_no = dpdeptmaster.member_no
+left join mbucfprename on mbmembmaster.prename_code = mbucfprename.prename_code
+where mbmembmaster.coop_id = $P{as_coopid}
+and mbmembmaster.resign_status = 1
+and dpdeptmaster.deptclose_status = 0
+and dpdeptmaster.prncbal > 0
+order by dpdeptmaster.prncbal desc]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="RESIGN_DATE" class="java.sql.Timestamp"/>
+	<field name="DEPTACCOUNT_NO" class="java.lang.String"/>
+	<field name="PRNCBAL" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="79c3e48b-0dc6-474d-82d2-4c0c648a85f7" x="31" y="25" width="68" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[เลขสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c259ec4d-3d9a-4c0f-a284-b80d16209ab3" x="99" y="25" width="194" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ชื่อ - นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9bde0178-a68a-4947-8ed2-fd42855d104d" x="293" y="25" width="59" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[วันลาออก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b5eced4-7f67-463c-a41e-cb7b462b3738" x="352" y="25" width="83" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[เลขบัญชี]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ae9c946b-3179-401f-a6ae-682861dc87fe" x="435" y="25" width="120" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[เงินคงเหลือ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d03dfc5a-7719-45c5-9450-6c2c8560d9e8" x="0" y="0" width="555" height="25"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานสมาชิกลาออกแต่มีบัญชีเงินฝาก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1709cfb3-27d0-420b-8c53-07c2d177ab0a" x="0" y="25" width="31" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="f55c510a-a5f2-4dec-8b21-f43cc4a38bcc" x="31" y="0" width="68" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="926de45b-f4cc-4b5a-88d9-f781e804a2c6" x="99" y="0" width="194" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}+$F{MEMB_NAME}+"   "+$F{MEMB_SURNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f3888a28-3457-4d12-bd03-baddf82cc9e4" x="293" y="0" width="59" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale ( "th", "TH" )).format($F{RESIGN_DATE})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5c4d920b-402e-4f7c-bf1a-bb9853af63ec" x="352" y="0" width="83" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTACCOUNT_NO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="54f36922-5df5-4089-b193-5320287e06ff" x="435" y="0" width="120" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRNCBAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f68a48ab-d817-4a5a-b120-30a1e0af2cee" x="-1" y="0" width="32" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

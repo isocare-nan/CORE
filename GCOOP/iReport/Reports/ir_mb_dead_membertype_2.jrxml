@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mb_new_membertype_2" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4514cbb2-09c9-4853-ab47-0bef29e44718">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_period" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+mbreqresign.member_no ,
+mbucfprename.prename_desc ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+mbucfdistrict.district_desc ,
+mbreqresign.resignreq_date ,
+nvl( mbreqresignshare.sharestk_value ,0 ) as sharestk_value,
+nvl( mbreqresignloan.principal_balance ,0 ) as principal_balance ,
+(case
+             when  trim(substr( $P{as_period},5,2))= '01'  then 'มกราคม'
+             when  trim(substr( $P{as_period},5,2))= '02'  then 'กุมภาพันธ์'
+            when  trim(substr( $P{as_period},5,2))= '03'  then 'มีนาคม'
+            when  trim(substr( $P{as_period},5,2)) = '04' then 'เมษายน'
+            when  trim(substr( $P{as_period},5,2))= '05'  then 'พฤษภาคม'
+            when  trim(substr( $P{as_period},5,2))= '06'  then 'มิถุนายน'
+            when  trim(substr( $P{as_period},5,2))= '07'  then 'กรกฎาคม'
+            when  trim(substr( $P{as_period},5,2))= '08'  then 'สิงหาคม'
+            when  trim(substr( $P{as_period},5,2))= '09'  then 'กันยายน'
+            when  trim(substr( $P{as_period},5,2))= '10' then 'ตุลาคม'
+            when  trim(substr( $P{as_period},5,2))= '11'  then 'พฤศจิกายน'
+		   when  trim(substr( $P{as_period},5,2))= '12'  then 'ธันวาคม'
+            else ' '
+        END) as Months ,
+TO_NUMBER(substr( $P{as_period} ,1 , 4 )) +543 as year
+from mbreqresign
+left join mbmembmaster on mbreqresign.member_no = mbmembmaster.member_no
+left join mbucfprename on mbmembmaster.prename_code = mbucfprename.prename_code
+left join mbucfdistrict on mbmembmaster.amphur_code = mbucfdistrict.district_code
+left join mbreqresignshare on mbreqresign.resignreq_docno = mbreqresignshare.resignreq_docno
+left join (select mbreqre.resignreq_docno , sum(mbreqre.principal_balance) as principal_balance ,  sum(mbreqre.interest) as interest  ,  sum(mbreqre.interest_amount) as interest_amount  ,  sum(mbreqre.interest_arrear) as interest_arrear from mbreqresignloan mbreqre group by mbreqre.resignreq_docno) mbreqresignloan on mbreqresign.resignreq_docno = mbreqresignloan.resignreq_docno
+where mbreqresign.resigncause_code = '03'
+and mbmembmaster.member_type = 2
+and mbreqresign.coop_id = $P{as_coopid}
+and extract(month from mbreqresign.apv_date ) = substr( $P{as_period} ,5 , 2 )
+and extract(year from mbreqresign.apv_date ) = substr( $P{as_period},1 , 4 )
+order by mbreqresign.apv_date]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="DISTRICT_DESC" class="java.lang.String"/>
+	<field name="RESIGNREQ_DATE" class="java.sql.Timestamp"/>
+	<field name="SHARESTK_VALUE" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="MONTHS" class="java.lang.String"/>
+	<field name="YEAR" class="java.math.BigDecimal"/>
+	<variable name="variable1" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{SHARESTK_VALUE}-$F{PRINCIPAL_BALANCE}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="03aff80a-df6e-4a7b-8831-ef02f5bec39c" x="0" y="40" width="29" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="58932b9b-179f-458f-8782-81ef113de6e6" x="29" y="40" width="58" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[เลขสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2d954d59-e12e-43cf-8d68-77c791dbd4d0" x="87" y="40" width="184" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ชื่อ - นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aab92b47-f925-4b08-a5fb-77a6c48d3f7c" x="271" y="40" width="146" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[อำเภอ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9cd79d49-fca3-4c80-bb94-5ddf6aebf0cf" x="417" y="40" width="83" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ถึงแก่กรรม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6cfc3e1f-111d-43c8-9ded-cd84a2ed9e1d" x="0" y="0" width="802" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานสมาชิกสมทบถึงแก่กรรม]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="6e66726a-4775-4f90-9317-db29ea75f724" x="0" y="20" width="802" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ประจำเดือน "+ $F{MONTHS} + " ปี " + $F{YEAR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a54dc499-99d1-4b6d-9288-caa285f0db35" x="500" y="40" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ทุนเรือนหุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="93fe8cb3-b1e5-403d-bc79-187a0a015b6f" x="600" y="40" width="92" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[มีหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3dafea15-313f-4e81-8e97-06ed2cceb4b3" x="692" y="40" width="110" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[รับเงินจริง]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1e584e4f-79b1-417f-9ddb-b59cf3c74d8d" x="87" y="0" width="184" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}+$F{MEMB_NAME}+"  "+$F{MEMB_SURNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6d4d59b0-d875-4ecf-ba79-c76ab06a8bfe" x="271" y="0" width="146" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DISTRICT_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ed5d0bd8-1ad8-417a-9966-af39e5321e19" x="417" y="0" width="83" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale ( "th", "TH" )).format($F{RESIGNREQ_DATE})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="46f5306f-fbf1-491a-9fbc-b7f1b2bc2cc9" x="29" y="0" width="58" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="af5fb8f6-5bf0-4ed5-ac43-c5d9722315d5" x="0" y="0" width="29" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}+"."]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="39a078a8-1d9b-445f-bb0c-889cc76ec8b2" x="500" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SHARESTK_VALUE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c0c4f481-ace7-429b-a662-3dc09c1df954" x="600" y="0" width="92" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRINCIPAL_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="831ccc8c-6cd5-4235-9cc8-c46c6e113c83" x="692" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_assistedu_child" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="54504333-f687-47a3-9d58-324200f2afab">
+	<property name="ireport.zoom" value="1.2100000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_startdate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_enddate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select distinct
+cm.coop_name,
+ar.member_no,
+ft_getmbname(mb.coop_id,mb.member_no) as fullname,
+ar.ass_rcvname,
+ar.ass_rcvcardid,
+al.edulevel_desc,
+ar.edu_school,
+ar.assist_amt,
+ar.assistpay_code,
+ap.assistpay_desc
+from assreqmaster ar
+left join mbmembmaster mb on ar.member_no = mb.member_no
+left join assucfedulevel al on ar.edu_levelcode = al.edulevel_code
+left join cmcoopconstant cm on ar.coop_id = cm.coop_no
+left join assucfassisttypepay ap on ap.assistpay_code=ar.assistpay_code and ap.assisttype_code = ar.assisttype_code
+where ar.assisttype_code = 10
+and ar.req_date between $P{adtm_startdate} and $P{adtm_enddate}
+and ar.req_status = 8
+order by ar.assistpay_code,ar.member_no]]>
+	</queryString>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="ASS_RCVNAME" class="java.lang.String"/>
+	<field name="ASS_RCVCARDID" class="java.lang.String"/>
+	<field name="EDULEVEL_DESC" class="java.lang.String"/>
+	<field name="EDU_SCHOOL" class="java.lang.String"/>
+	<field name="ASSIST_AMT" class="java.math.BigDecimal"/>
+	<field name="ASSISTPAY_CODE" class="java.lang.String"/>
+	<field name="ASSISTPAY_DESC" class="java.lang.String"/>
+	<variable name="count_group" class="java.math.BigDecimal" resetType="Group" resetGroup="assistpay_code" incrementType="Group" incrementGroup="member_no" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="check_count" class="java.math.BigDecimal" resetType="Group" resetGroup="member_no" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="count_group_pay" class="java.math.BigDecimal" resetType="Group" resetGroup="assistpay_code" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="sum_group_pay" class="java.math.BigDecimal" resetType="Group" resetGroup="assistpay_code" calculation="Sum">
+		<variableExpression><![CDATA[$F{ASSIST_AMT}]]></variableExpression>
+	</variable>
+	<group name="assistpay_code">
+		<groupExpression><![CDATA[$F{ASSISTPAY_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="65c7973b-a7a0-4eb1-8eb4-8aa71ef802b7" x="18" y="0" width="784" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ประเภทการจ่าย : " + $F{ASSISTPAY_DESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="28">
+				<staticText>
+					<reportElement uuid="bd1371ed-fdd9-4a45-93f8-2be9132ec9cd" x="33" y="3" width="73" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[รวม]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="6e7fd9d3-e9ee-476b-b3d2-b35bb7e1fe68" x="106" y="3" width="95" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{count_group_pay}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="f46c91f9-6edd-4c10-9141-0982e446327a" x="201" y="3" width="158" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ราย]]></text>
+				</staticText>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="b91386f2-f2d3-40bb-9cdb-ffa7805fec92" x="720" y="3" width="82" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+						<paragraph rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_group_pay}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="member_no">
+		<groupExpression><![CDATA[$F{MEMBER_NO}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="64" splitType="Stretch">
+			<textField>
+				<reportElement uuid="15d442ef-922a-40f7-9d75-b801c97f603d" x="298" y="34" width="221" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รายงานใบคำขอรับทุนบุตร"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="746d2152-f7ec-487e-a5cd-1d51b3e7724b" x="251" y="0" width="314" height="32"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3c71175b-78f7-4c3e-a16c-bceca8f3a8bc" x="668" y="0" width="69" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่ : "+$V{PAGE_NUMBER}+" / "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3df62315-3300-47c7-bbbe-df8896b09cee" x="651" y="20" width="69" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["พิมพ์ ณ วันที่ :  "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="cd621d58-4026-4b37-b3ac-004873787120" x="737" y="0" width="69" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH.mm">
+				<reportElement uuid="1eed0529-d120-4b8a-b0ed-a7254d737c67" x="720" y="20" width="69" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e92c5b42-d3cf-48b5-acbd-2f17da07ed0a" x="0" y="0" width="33" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ลำดับ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4743604c-c745-42ee-af19-e538afb68463" x="33" y="0" width="100" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เลขสมาชิก"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8a16e040-03f9-4559-921d-c13e3abab84d" x="133" y="0" width="135" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ชื่อ-สกุล"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ddf892a0-e8cf-462c-ad30-9f47b8f5215f" x="268" y="0" width="156" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ชื่อ-สกุลบุตร"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="434cf8aa-5315-4d97-ab6f-d430ad53ff98" x="424" y="0" width="77" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เลขบัตรประชาชนบุตร"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="da124735-9293-451c-8987-9c09fa379451" x="501" y="0" width="92" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ระดับชั้น"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fbf7e2cc-e662-4040-864c-e67cfd5a5eb8" x="593" y="0" width="127" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["สถานศึกษา"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="968728c9-a70e-4871-af3b-07474a0224b5" x="720" y="0" width="82" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["จำนวนเงินที่ได้รับ"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="0a039566-f8f9-4a17-86f6-41085a8aae42" x="133" y="0" width="135" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{check_count}==1 ? $F{FULLNAME} : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="65f36adb-fd40-41bc-92f5-866cd78d1f5a" x="0" y="0" width="33" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{check_count}==1 ? $V{count_group} : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="09cb2fd6-713e-47a3-9f61-ab4b31bb7139" x="593" y="0" width="127" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EDU_SCHOOL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a7529f64-7255-4e62-896b-8def114ac6bc" x="268" y="0" width="156" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASS_RCVNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8d52251c-438d-4558-8bb5-22b5921ddc43" x="501" y="0" width="92" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EDULEVEL_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="793e230c-c50a-4c75-9aa7-2f45bbcdae70" x="33" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{check_count}==1 ? $F{MEMBER_NO} : ""]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="9c2d09f0-3b3d-4f6d-b9a3-639adba0364a" x="720" y="0" width="82" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASSIST_AMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f2505397-3af0-4b85-9e10-f387e8eb349b" x="424" y="0" width="77" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASS_RCVCARDID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

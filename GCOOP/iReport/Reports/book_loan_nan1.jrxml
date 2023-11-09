@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="book_loan_nan" language="groovy" pageWidth="1090" pageHeight="1200" columnWidth="1050" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="12f204a6-55c9-45e7-b353-ba2c17fad1e2">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\GCOOP_ALL\\CORE\\GCOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="loancontract_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_name" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select LNR.COOP_ID,
+LC.LOANREQUEST_DOCNO,LC.MEMBER_NO,
+PRE.PRENAME_DESC||MB.MEMB_NAME||'  '||MB.MEMB_SURNAME as NAME_FULL,MB.POSITION_DESC,
+TRIM(MB.MEMBGROUP_CODE) as MEMBGROUP_CODE,TRIM(GR.MEMBGROUP_DESC) as MEMBGROUP_DESC,MST.DISTRICT_DESC,
+(select b.MEMBGROUP_DESC from
+
+ MBUCFMEMBGROUP a,(select
+ "MBUCFMEMBGROUP_A"."MEMBGROUP_CONTROL",
+ "MBUCFMEMBGROUP_B"."MEMBGROUP_DESC"
+from  "MBUCFMEMBGROUP" "MBUCFMEMBGROUP_A",
+         "MBUCFMEMBGROUP" "MBUCFMEMBGROUP_B"
+where
+(mbucfmembgroup_a.membgroup_control = mbucfmembgroup_b.membgroup_code(+) )
+group by  "MBUCFMEMBGROUP_A"."MEMBGROUP_CONTROL",
+ "MBUCFMEMBGROUP_B"."MEMBGROUP_DESC") b
+where a.MEMBGROUP_CONTROL = b.MEMBGROUP_CONTROL and
+trim(a.MEMBGROUP_Code) = TRIM(MB.MEMBGROUP_CODE)) GG,
+LC.LOANAPPROVE_AMT,LC.PERIOD_INSTALLMENT,LC.PERIOD_PAYMENT,LC.STARTKEEP_PERIOD,
+LC.LOANAPPROVE_DATE,LNU.LOANOBJECTIVE_DESC,LNR.IDENTIFYCONT_INTRATE,
+LC.LOANCONTRACT_NO,
+FTREADTBAHT(LC.LOANAPPROVE_AMT) as LOANAPPROVE_AMT1,
+FTREADTNUM(LC.PERIOD_payamt) as PERIOD_INSTALLMENT1,
+FTREADTBAHT(LC.PERIOD_PAYMENT) as PERIOD_PAYMENT1,
+FTCNVTDATE(TO_DATE(LC.LOANAPPROVE_DATE),5) as APPROVE_DATE,
+FTCNVTDATE(TO_DATE(LNR.LOANREQUEST_DATE),5) as LOANREQUEST_DATE,
+$P{as_name}  as NAMEPRINT,
+(case
+    when  TRIM(AA.MONTHMONTH)= '1'  then 'มกราคม'
+    when  TRIM(AA.MONTHMONTH)= '2'  then 'กุมภาพันธ์'
+    when  TRIM(AA.MONTHMONTH)= '3'  then 'มีนาคม'
+    when  TRIM(AA.MONTHMONTH)= '4'  then 'เมษายน'
+    when  TRIM(AA.MONTHMONTH)= '5'  then 'พฤษภาคม'
+    when  TRIM(AA.MONTHMONTH)= '6'  then 'มิถุนายน'
+    when  TRIM(AA.MONTHMONTH)= '7'  then 'กรกฎาคม'
+    when  TRIM(AA.MONTHMONTH)= '8'  then 'สิงหาคม'
+    when  TRIM(AA.MONTHMONTH)= '9'  then 'กันยายน'
+    when  TRIM(AA.MONTHMONTH)= '10'  then 'ตุลาคม'
+    when  TRIM(AA.MONTHMONTH)= '11'  then 'พฤศจิกายน'
+		when  TRIM(AA.MONTHMONTH)= '12'  then 'ธันวาคม'
+    else ' '
+end) as MONTHS,AA.YEARYEAR
+
+
+
+from LNCONTMASTER LC
+left join (select MEMBER_NO,LOANCONTRACT_NO, LOANAPPROVE_DATE,LOANREQUEST_DOCNO,
+ case extract(month from LOANAPPROVE_DATE)   when  12  then 01
+ else TO_CHAR(LOANAPPROVE_DATE,'MM') + 1
+ end
+ as MONTHMONTH,
+ case extract(month from LOANAPPROVE_DATE)   when  12  then TO_CHAR(LOANAPPROVE_DATE,'yyyy') + 543
+ else TO_CHAR(LOANAPPROVE_DATE,'yyyy') + 543
+ end
+as YEARYEAR
+from  LNCONTMASTER where
+extract(day from LOANAPPROVE_DATE) < 10
+union
+select MEMBER_NO,LOANCONTRACT_NO, LOANAPPROVE_DATE,LOANREQUEST_DOCNO,
+ case extract(month from LOANAPPROVE_DATE)   when  12  then 01
+ else TO_CHAR(LOANAPPROVE_DATE,'MM') + 1
+ end
+ as MONTHMONTH,
+ case extract(month from LOANAPPROVE_DATE)   when  12  then TO_CHAR(LOANAPPROVE_DATE,'yyyy') + 544
+ else TO_CHAR(LOANAPPROVE_DATE,'yyyy') + 543
+ end
+as YEARYEAR
+from  LNCONTMASTER where
+extract(day from LOANAPPROVE_DATE) > 10 order by LOANAPPROVE_DATE) AA
+on AA.LOANREQUEST_DOCNO = LC.LOANREQUEST_DOCNO
+left join MBMEMBMASTER MB on LC.MEMBER_NO = MB.MEMBER_NO
+left join MBUCFPRENAME PRE on MB.PRENAME_CODE = PRE.PRENAME_CODE
+left join MBUCFMEMBGROUP GR on TRIM(MB.MEMBGROUP_CODE) = TRIM(GR.MEMBGROUP_CODE)
+left join MBUCFDISTRICT MST on MST.DISTRICT_CODE = GR.ADDR_AMPHUR
+left join LNREQLOAN LNR on LNR.LOANREQUEST_DOCNO = LC.LOANREQUEST_DOCNO
+left join LNUCFLOANOBJECTIVE LNU on TRIM(LNU.LOANOBJECTIVE_CODE) = TRIM(LNR.LOANOBJECTIVE_CODE)
+where LNR.COOP_ID = $P{as_coopid} and trim(LC.LOANCONTRACT_NO) in ($P!{loancontract_no} )
+order by LC.LOANCONTRACT_NO,LC.MEMBER_NO ASC]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="LOANREQUEST_DOCNO" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="NAME_FULL" class="java.lang.String"/>
+	<field name="POSITION_DESC" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="DISTRICT_DESC" class="java.lang.String"/>
+	<field name="GG" class="java.lang.String"/>
+	<field name="LOANAPPROVE_AMT" class="java.math.BigDecimal"/>
+	<field name="PERIOD_INSTALLMENT" class="java.math.BigDecimal"/>
+	<field name="PERIOD_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="STARTKEEP_PERIOD" class="java.lang.String"/>
+	<field name="LOANAPPROVE_DATE" class="java.sql.Timestamp"/>
+	<field name="LOANOBJECTIVE_DESC" class="java.lang.String"/>
+	<field name="IDENTIFYCONT_INTRATE" class="java.math.BigDecimal"/>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="LOANAPPROVE_AMT1" class="java.lang.String"/>
+	<field name="PERIOD_INSTALLMENT1" class="java.lang.String"/>
+	<field name="PERIOD_PAYMENT1" class="java.lang.String"/>
+	<field name="APPROVE_DATE" class="java.lang.String"/>
+	<field name="LOANREQUEST_DATE" class="java.lang.String"/>
+	<field name="NAMEPRINT" class="java.lang.String"/>
+	<field name="MONTHS" class="java.lang.String"/>
+	<field name="YEARYEAR" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="717" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4a3db035-60e7-45a4-bb67-1d0432f9f182" x="271" y="135" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[COOP_ID]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ded384e5-811b-4a07-9169-4f09bfdbb828" x="371" y="135" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{COOP_ID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f04d8521-5f28-4e2c-997e-42eb9c18ce6b" x="48" y="91" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[LOANREQUEST_DOCNO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="577e46fc-88fe-431a-9561-35935078026f" x="148" y="91" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LOANREQUEST_DOCNO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="96df263f-7b6b-4c15-9442-59869473b81c" x="59" y="184" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[MEMBER_NO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="2090fa39-d1fa-4672-b026-66e7ff0bac15" x="159" y="184" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="00b454dd-687e-44c9-ad9a-447f5724c55d" x="108" y="303" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[NAME_FULL]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="45b3467c-ec47-4b66-ae2f-e9cc607f3a5f" x="208" y="303" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NAME_FULL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fe8ea376-4f0c-4ddf-a1b5-b1e4131a0609" x="171" y="368" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[MEMBGROUP_CODE]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="8837de8c-d7e7-4001-8778-2bde5f2a06cf" x="271" y="368" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6943b397-f704-46a0-8914-fd234ea91426" x="303" y="476" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[PERIOD_INSTALLMENT]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="677609c1-2a6f-40a8-9584-d5197418c32f" x="403" y="476" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{PERIOD_INSTALLMENT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="215"/>
+	</pageFooter>
+</jasperReport>

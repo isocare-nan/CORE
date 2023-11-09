@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mbshr_mbmembmaster_group" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="45e7f3d4-096d-4270-aef7-f1fd39cac57f">
+	<property name="ireport.zoom" value="1.9487171000000014"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="coop_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="start_membgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="end_membgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+mbucfmembgroupcontrol.membgroup_control ,
+mbucfmembgroupcontrol.membgroup_controldesc ,
+mbmembmaster.member_no ,
+mbucfprename.prename_desc ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+mbucfmembgroup.membgroup_code ,
+mbucfmembgroup.membgroup_desc,
+mbmembmaster.card_person ,
+	'                                                                                              ' as fix_coopname
+
+from mbmembmaster
+left join mbucfprename on mbucfprename.prename_code = mbmembmaster.prename_code
+left join mbucfmembgroup on mbmembmaster.membgroup_code = mbucfmembgroup.membgroup_code
+left join mbucfmembgroupcontrol on trim(mbucfmembgroup.membgroup_control) = trim(mbucfmembgroupcontrol.membgroup_control)
+left join shsharemaster on mbmembmaster.member_no = shsharemaster.member_no
+
+where  mbmembmaster.coop_id = $P{coop_id}
+and mbmembmaster.membgroup_code between $P{start_membgroup} and $P{end_membgroup}
+and mbmembmaster.member_status = 1
+and mbmembmaster.resign_status <> 1
+and shsharemaster.sharestk_amt > 0
+order by mbucfmembgroupcontrol.membgroup_control , mbmembmaster.membgroup_code,mbmembmaster.member_no ASC]]>
+	</queryString>
+	<field name="MEMBGROUP_CONTROL" class="java.lang.String"/>
+	<field name="MEMBGROUP_CONTROLDESC" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="CARD_PERSON" class="java.lang.String"/>
+	<field name="FIX_COOPNAME" class="java.lang.String"/>
+	<variable name="count_group_person" class="java.lang.Number" resetType="Group" resetGroup="membgroup_code" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="count_control_person" class="java.lang.Number" resetType="Group" resetGroup="membgroup_control" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="variable1" class="java.lang.Number" resetType="Group" resetGroup="membgroup_control" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBGROUP_CONTROL}]]></variableExpression>
+	</variable>
+	<group name="membgroup_control">
+		<groupExpression><![CDATA[$F{MEMBGROUP_CONTROL}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="5eb21ed3-75ac-4609-bfae-c29a3f8009e2" x="0" y="0" width="392" height="20"/>
+					<textElement>
+						<font fontName="AngsanaUPC" size="16" isBold="true" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MEMBGROUP_CONTROL}+ " : "+$F{MEMBGROUP_CONTROLDESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="#,##0">
+					<reportElement uuid="36ec192d-9eb5-474d-b9cd-628611ea6cbe" x="392" y="0" width="132" height="20"/>
+					<textElement textAlignment="Right">
+						<font fontName="AngsanaUPC" size="16"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{count_control_person}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="77afcb1f-26bf-4533-9699-1c1726d4c14b" x="524" y="0" width="31" height="20"/>
+					<textElement>
+						<font fontName="AngsanaUPC" size="16" isBold="true" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["  ราย"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="9ecc3aad-dbb6-437e-bd40-b242e471bb23" x="0" y="0" width="392" height="20"/>
+					<textElement>
+						<font fontName="AngsanaUPC" size="16" isBold="true" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวมสังกัด   " + $F{MEMBGROUP_CONTROL}+ " : "+$F{MEMBGROUP_CONTROLDESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="membgroup_code">
+		<groupExpression><![CDATA[$F{MEMBGROUP_CODE}]]></groupExpression>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement uuid="6a2f5deb-da59-4699-affe-d55131075f97" x="29" y="0" width="363" height="20"/>
+					<textElement>
+						<font fontName="AngsanaUPC" size="16" isBold="false" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE} + " : "+$F{MEMBGROUP_DESC}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0">
+					<reportElement uuid="a8980261-3bd5-45b6-a5e4-d35006a9c075" x="392" y="0" width="132" height="20"/>
+					<textElement textAlignment="Right">
+						<font fontName="AngsanaUPC" size="16"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{count_group_person}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="398874a0-c129-432b-9aa6-e84cd8df3a13" x="524" y="0" width="31" height="20"/>
+					<textElement>
+						<font fontName="AngsanaUPC" size="16" isBold="true" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["  ราย"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ceb1b68b-5247-4194-9474-c711db7f277b" x="0" y="0" width="555" height="27"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานระเบียนสมาชิก (เรียงตามหน่วย)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="2321bc01-913c-4b68-b24f-c8adc4450dab" x="0" y="0" width="392" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[หน่วย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="32e16b51-f6b8-44bb-9798-4232c91038d7" x="392" y="0" width="163" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[จำนวนคน]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="cb5ab523-9331-4d0f-98e0-4df171beacda" x="0" y="21" width="555" height="1"/>
+			</line>
+		</band>
+	</pageHeader>
+	<summary>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement uuid="728f4521-55da-4e38-8fec-feb690ada291" x="0" y="6" width="555" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมทั้งหมด " +$V{REPORT_COUNT} + " คน"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ebb460d6-b5cb-4f53-96f6-a9174691b7d8" x="0" y="2" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="51a242bd-47ed-48e1-9171-bb182b6b77bc" x="0" y="30" width="555" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

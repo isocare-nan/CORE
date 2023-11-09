@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1e299ec9-0a98-41cd-8b8d-e093da6df5e8">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select * from mbmembmaster
+left join lncontmaster on mbmembmaster.member_no = lncontmaster.member_no
+where mbmembmaster.member_no = '00015783']]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_CODE" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="MEMB_ENAME" class="java.lang.String"/>
+	<field name="MEMB_ESURNAME" class="java.lang.String"/>
+	<field name="MEMBTYPE_CODE" class="java.lang.String"/>
+	<field name="SIGNATURE_NAME" class="java.lang.String"/>
+	<field name="BIRTH_DATE" class="java.sql.Timestamp"/>
+	<field name="MEMBER_DATE" class="java.sql.Timestamp"/>
+	<field name="DEAD_STATUS" class="java.math.BigDecimal"/>
+	<field name="DEAD_DATE" class="java.sql.Timestamp"/>
+	<field name="RETRY_STATUS" class="java.math.BigDecimal"/>
+	<field name="RETRY_DATE" class="java.sql.Timestamp"/>
+	<field name="RESIGN_STATUS" class="java.math.BigDecimal"/>
+	<field name="RESIGN_DATE" class="java.sql.Timestamp"/>
+	<field name="RESIGNCAUSE_CODE" class="java.lang.String"/>
+	<field name="CLOSE_DATE" class="java.sql.Timestamp"/>
+	<field name="SEX" class="java.lang.String"/>
+	<field name="MARIAGE_STATUS" class="java.math.BigDecimal"/>
+	<field name="ADDR_NO" class="java.lang.String"/>
+	<field name="ADDR_MOO" class="java.lang.String"/>
+	<field name="ADDR_SOI" class="java.lang.String"/>
+	<field name="ADDR_VILLAGE" class="java.lang.String"/>
+	<field name="ADDR_ROAD" class="java.lang.String"/>
+	<field name="TAMBOL_CODE" class="java.lang.String"/>
+	<field name="AMPHUR_CODE" class="java.lang.String"/>
+	<field name="PROVINCE_CODE" class="java.lang.String"/>
+	<field name="ADDR_POSTCODE" class="java.lang.String"/>
+	<field name="ADDR_PHONE" class="java.lang.String"/>
+	<field name="ADDR_MOBILEPHONE" class="java.lang.String"/>
+	<field name="CURRADDR_NO" class="java.lang.String"/>
+	<field name="CURRADDR_MOO" class="java.lang.String"/>
+	<field name="CURRADDR_SOI" class="java.lang.String"/>
+	<field name="CURRADDR_VILLAGE" class="java.lang.String"/>
+	<field name="CURRADDR_ROAD" class="java.lang.String"/>
+	<field name="CURRTAMBOL_CODE" class="java.lang.String"/>
+	<field name="CURRAMPHUR_CODE" class="java.lang.String"/>
+	<field name="CURRPROVINCE_CODE" class="java.lang.String"/>
+	<field name="CURRADDR_POSTCODE" class="java.lang.String"/>
+	<field name="CURRADDR_PHONE" class="java.lang.String"/>
+	<field name="ADDR_EMAIL" class="java.lang.String"/>
+	<field name="MEM_TELWORK" class="java.lang.String"/>
+	<field name="MATE_NAME" class="java.lang.String"/>
+	<field name="CARD_PERSON" class="java.lang.String"/>
+	<field name="CARD_TAX" class="java.lang.String"/>
+	<field name="MEMBER_CARD" class="java.lang.String"/>
+	<field name="WORK_DATE" class="java.sql.Timestamp"/>
+	<field name="POSITION_CODE" class="java.lang.String"/>
+	<field name="POSITION_DESC" class="java.lang.String"/>
+	<field name="LEVEL_CODE" class="java.math.BigDecimal"/>
+	<field name="DEPARTMENT_CODE" class="java.lang.String"/>
+	<field name="SALARY_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="SALARY_ID" class="java.lang.String"/>
+	<field name="FIRSTFEE_STATUS" class="java.math.BigDecimal"/>
+	<field name="MEMBER_STATUS" class="java.math.BigDecimal"/>
+	<field name="MEMREF_FLAG" class="java.math.BigDecimal"/>
+	<field name="MEMBER_REF" class="java.lang.String"/>
+	<field name="KLONGTOON_FLAG" class="java.math.BigDecimal"/>
+	<field name="HAVE_GAIN" class="java.math.BigDecimal"/>
+	<field name="PAUSEKEEP_FLAG" class="java.math.BigDecimal"/>
+	<field name="PAUSEKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="FIRST_KEEPDATE" class="java.sql.Timestamp"/>
+	<field name="LNPROVIDENTFUND_FLAG" class="java.math.BigDecimal"/>
+	<field name="ALLOWLOAN_FLAG" class="java.math.BigDecimal"/>
+	<field name="DROPGURANTEE_FLAG" class="java.math.BigDecimal"/>
+	<field name="TRANSRIGHT_FLAG" class="java.math.BigDecimal"/>
+	<field name="DROPLOANALL_FLAG" class="java.math.BigDecimal"/>
+	<field name="DIVIDEND_FLAG" class="java.math.BigDecimal"/>
+	<field name="AVERAGE_FLAG" class="java.math.BigDecimal"/>
+	<field name="SEQUEST_DIVAVG" class="java.math.BigDecimal"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="MEMBER_TYPE" class="java.math.BigDecimal"/>
+	<field name="DIVAVGSHOW_FLAG" class="java.math.BigDecimal"/>
+	<field name="PRINTRECEIPTADDR_TYPE" class="java.math.BigDecimal"/>
+	<field name="WEB_CODE" class="java.lang.String"/>
+	<field name="IVR_CODE" class="java.lang.String"/>
+	<field name="MEMBTRANS_DATE" class="java.sql.Timestamp"/>
+	<field name="ACCUM_INTEREST" class="java.math.BigDecimal"/>
+	<field name="SUMINT_LASTYEAR" class="java.math.BigDecimal"/>
+	<field name="MISSPAYLON_AMT" class="java.math.BigDecimal"/>
+	<field name="MISSPAYSHR_AMT" class="java.math.BigDecimal"/>
+	<field name="MATE_MBFLAG" class="java.math.BigDecimal"/>
+	<field name="MATE_MBNO" class="java.lang.String"/>
+	<field name="EXPENSE_CODE" class="java.lang.String"/>
+	<field name="EXPENSE_BANK" class="java.lang.String"/>
+	<field name="EXPENSE_BRANCH" class="java.lang.String"/>
+	<field name="EXPENSE_ACCID" class="java.lang.String"/>
+	<field name="APPL_DOCNO" class="java.lang.String"/>
+	<field name="APPLTYPE_CODE" class="java.lang.String"/>
+	<field name="COMPOUNDKEEP_GROUP" class="java.lang.String"/>
+	<field name="COMPOUNDKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="COMPOUNDKEEP_STATUS" class="java.math.BigDecimal"/>
+	<field name="COMPOUNDKEEP_PERIOD" class="java.math.BigDecimal"/>
+	<field name="COMPOUNDKEEP_DUEDATE" class="java.sql.Timestamp"/>
+	<field name="COMPOUNDKEEP_NMLDATE" class="java.sql.Timestamp"/>
+	<field name="INSURANCE_FLAG" class="java.math.BigDecimal"/>
+	<field name="CREMATION_STATUS" class="java.math.BigDecimal"/>
+	<field name="NATIONALITY" class="java.lang.String"/>
+	<field name="INCOMEETC_AMT" class="java.math.BigDecimal"/>
+	<field name="FATHER_NAME" class="java.lang.String"/>
+	<field name="MATHER_NAME" class="java.lang.String"/>
+	<field name="SUBGROUP_CODE" class="java.lang.String"/>
+	<field name="EMP_TYPE" class="java.lang.String"/>
+	<field name="MATEADDR_NO" class="java.lang.String"/>
+	<field name="MATEADDR_MOO" class="java.lang.String"/>
+	<field name="MATEADDR_VILLAGE" class="java.lang.String"/>
+	<field name="MATEADDR_SOI" class="java.lang.String"/>
+	<field name="MATEADDR_ROAD" class="java.lang.String"/>
+	<field name="MATETAMBOL_CODE" class="java.lang.String"/>
+	<field name="MATEAMPHUR_CODE" class="java.lang.String"/>
+	<field name="MATEPROVINCE_CODE" class="java.lang.String"/>
+	<field name="MATEADDR_POSTCODE" class="java.lang.String"/>
+	<field name="MATEADDR_PHONE" class="java.lang.String"/>
+	<field name="LASTKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="MATE_CARDPERSON" class="java.lang.String"/>
+	<field name="MATE_SALARYID" class="java.lang.String"/>
+	<field name="UPDATE_BYENTRYID" class="java.lang.String"/>
+	<field name="UPDATE_BYENTRYIP" class="java.lang.String"/>
+	<field name="KEEPSAL_FLAG" class="java.math.BigDecimal"/>
+	<field name="TAMBOL_DESC" class="java.lang.String"/>
+	<field name="UPDATE_BYLASTDOC" class="java.lang.String"/>
+	<field name="REMEMB_FLAG" class="java.math.BigDecimal"/>
+	<field name="WRTFUND_BALANCE" class="java.math.BigDecimal"/>
+	<field name="GAINCOND_TYPE" class="java.math.BigDecimal"/>
+	<field name="GAINCOND_DESC" class="java.lang.String"/>
+	<field name="GAINCOND_DATE" class="java.sql.Timestamp"/>
+	<field name="RECVBUMNAT_DATE" class="java.sql.Timestamp"/>
+	<field name="RECVBUMNAT_AMT" class="java.math.BigDecimal"/>
+	<field name="MEMBGROUP_DVD" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="CURRENT_COOPID" class="java.lang.String"/>
+	<field name="MEMBTRANS_STATUS" class="java.math.BigDecimal"/>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="MEMCOOP_ID" class="java.lang.String"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="LOANOBJECTIVE_CODE" class="java.lang.String"/>
+	<field name="LOANREQUEST_DOCNO" class="java.lang.String"/>
+	<field name="LOANREQUEST_AMT" class="java.math.BigDecimal"/>
+	<field name="LOANAPPROVE_DATE" class="java.sql.Timestamp"/>
+	<field name="LOANAPPROVE_AMT" class="java.math.BigDecimal"/>
+	<field name="WITHDRAWABLE_AMT" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="LOANPAYMENT_TYPE" class="java.math.BigDecimal"/>
+	<field name="PERIOD_INSTALLMENT" class="java.math.BigDecimal"/>
+	<field name="PERIOD_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="PERIOD_LASTPAYMENT" class="java.math.BigDecimal"/>
+	<field name="PAYMENT_STATUS" class="java.math.BigDecimal"/>
+	<field name="LAST_PERIODRCV" class="java.math.BigDecimal"/>
+	<field name="LAST_PERIODPAY" class="java.math.BigDecimal"/>
+	<field name="STARTCONT_DATE" class="java.sql.Timestamp"/>
+	<field name="STARTKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="STARTKEEP_PERIOD" class="java.lang.String"/>
+	<field name="LASTRECEIVE_DATE" class="java.sql.Timestamp"/>
+	<field name="LASTPAYMENT_DATE" class="java.sql.Timestamp"/>
+	<field name="LASTCALINT_DATE" class="java.sql.Timestamp"/>
+	<field name="LASTKEEPING_DATE" class="java.sql.Timestamp"/>
+	<field name="LASTPROCESS_DATE" class="java.sql.Timestamp"/>
+	<field name="LASTACCESS_DATE" class="java.sql.Timestamp"/>
+	<field name="CLOSECONT_DATE" class="java.sql.Timestamp"/>
+	<field name="PRINCIPAL_ARREAR" class="java.math.BigDecimal"/>
+	<field name="INTEREST_ARREAR" class="java.math.BigDecimal"/>
+	<field name="INTYEAR_ARREAR" class="java.math.BigDecimal"/>
+	<field name="INTEREST_ACCUM" class="java.math.BigDecimal"/>
+	<field name="INTACCUM_LASTYEAR" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_RETURN" class="java.math.BigDecimal"/>
+	<field name="INTEREST_RETURN" class="java.math.BigDecimal"/>
+	<field name="PRNPAYMENT_AMT" class="java.math.BigDecimal"/>
+	<field name="INTPAYMENT_AMT" class="java.math.BigDecimal"/>
+	<field name="LAST_STM_NO" class="java.math.BigDecimal"/>
+	<field name="TRANSFER_STATUS" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_TRANS" class="java.math.BigDecimal"/>
+	<field name="TRNFROM_CONTNO" class="java.lang.String"/>
+	<field name="TRNFROM_MEMNO" class="java.lang.String"/>
+	<field name="NKEEP_PRINCIPAL" class="java.math.BigDecimal"/>
+	<field name="NKEEP_INTEREST" class="java.math.BigDecimal"/>
+	<field name="RKEEP_PRINCIPAL" class="java.math.BigDecimal"/>
+	<field name="RKEEP_INTEREST" class="java.math.BigDecimal"/>
+	<field name="COMPOUND_STATUS" class="java.math.BigDecimal"/>
+	<field name="COMPOUND_INSTALLMENT" class="java.math.BigDecimal"/>
+	<field name="COMPOUND_DUEDATE" class="java.sql.Timestamp"/>
+	<field name="COMPOUND_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="COMPOUND_PAYSTATUS" class="java.math.BigDecimal"/>
+	<field name="MISSPAY_AMT" class="java.math.BigDecimal"/>
+	<field name="OD_FLAG" class="java.math.BigDecimal"/>
+	<field name="CONTLAW_STATUS" class="java.math.BigDecimal"/>
+	<field name="CONTRACT_STATUS" class="java.math.BigDecimal"/>
+	<field name="APPROVE_ID" class="java.lang.String"/>
+	<field name="APPROVE_BYCOOPID" class="java.lang.String"/>
+	<field name="INT_CONTINTTYPE" class="java.math.BigDecimal"/>
+	<field name="INT_CONTINTRATE" class="java.math.BigDecimal"/>
+	<field name="INT_CONTINTTABCODE" class="java.lang.String"/>
+	<field name="INT_CONTINTINCREASE" class="java.math.BigDecimal"/>
+	<field name="INT_INTSTEPTYPE" class="java.math.BigDecimal"/>
+	<field name="STATUS_DESC" class="java.lang.String"/>
+	<field name="PERIOD_PAYAMT" class="java.math.BigDecimal"/>
+	<field name="PERIOD_PAYMENT_MAX" class="java.math.BigDecimal"/>
+	<field name="INTMONTH_ARREAR" class="java.math.BigDecimal"/>
+	<field name="LAST_TRANSCONT_NO" class="java.math.BigDecimal"/>
+	<field name="CONTRACT_TIME" class="java.math.BigDecimal"/>
+	<field name="EXPIRECONT_DATE" class="java.sql.Timestamp"/>
+	<field name="COMPOUND_DATE" class="java.sql.Timestamp"/>
+	<field name="COMPOUND_PERIOD" class="java.math.BigDecimal"/>
+	<field name="COMPOUNDDUE_DATE" class="java.sql.Timestamp"/>
+	<field name="BUYSHARE_AMT" class="java.math.BigDecimal"/>
+	<field name="RECEIVEPERIOD_FLAG" class="java.math.BigDecimal"/>
+	<field name="PRNCBALBEGIN_AMT" class="java.math.BigDecimal"/>
+	<field name="CONTRACT_TYPE" class="java.math.BigDecimal"/>
+	<field name="LOAN_NO" class="java.lang.String"/>
+	<field name="INSURANCE_AMT" class="java.math.BigDecimal"/>
+	<field name="INSTYPE_CODE" class="java.lang.String"/>
+	<field name="INTARREAR_TRANS" class="java.math.BigDecimal"/>
+	<field name="CANCEL_ID" class="java.lang.String"/>
+	<field name="CANCEL_DATE" class="java.sql.Timestamp"/>
+	<field name="CANCEL_CAUSE" class="java.lang.String"/>
+	<field name="COMPOUND_PAYTYPE" class="java.math.BigDecimal"/>
+	<field name="COMPOUND_NMLDATE" class="java.sql.Timestamp"/>
+	<field name="PRINCIPAL_TRANSBAL" class="java.math.BigDecimal"/>
+	<field name="INTARREAR_TRANSBAL" class="java.math.BigDecimal"/>
+	<field name="LOANPAYMENTCHG_DATE" class="java.sql.Timestamp"/>
+	<field name="COMPOUND_INTARRPAYMENT" class="java.math.BigDecimal"/>
+	<field name="INSURECOLL_FLAG" class="java.math.BigDecimal"/>
+	<field name="TRNLNTOCOLL_FLAG" class="java.math.BigDecimal"/>
+	<field name="COUNTPAY_FLAG" class="java.math.BigDecimal"/>
+	<field name="PERIOD_PAYINTARR" class="java.math.BigDecimal"/>
+	<field name="TRNFROM_PRNBAL" class="java.math.BigDecimal"/>
+	<field name="TRNFROM_INTBAL" class="java.math.BigDecimal"/>
+	<field name="PAYOUTORD_FLAG" class="java.math.BigDecimal"/>
+	<field name="IDENTIFYCONT_INTRATE" class="java.math.BigDecimal"/>
+	<field name="OBJINTWARRANT_CODE" class="java.lang.String"/>
+	<field name="CANCEL_PRNBALAMT" class="java.math.BigDecimal"/>
+	<field name="REQCOOP_ID" class="java.lang.String"/>
+	<field name="INTCERTIFICATE_STATUS" class="java.math.BigDecimal"/>
+	<field name="INTENDORSE_AMT" class="java.math.BigDecimal"/>
+	<field name="LOANCREDIT_AMT" class="java.math.BigDecimal"/>
+	<field name="INTSET_ARREAR" class="java.math.BigDecimal"/>
+	<field name="LOANPAY_CODE" class="java.lang.String"/>
+	<field name="LOANPAY_BANK" class="java.lang.String"/>
+	<field name="LOANPAY_BRANCH" class="java.lang.String"/>
+	<field name="LOANPAY_ACCID" class="java.lang.String"/>
+	<field name="LOANPAYSPLIT_FLAG" class="java.math.BigDecimal"/>
+	<field name="CONTCCLCAUSE_CODE" class="java.lang.String"/>
+	<field name="INTCOMPOUND_ARREAR" class="java.math.BigDecimal"/>
+	<field name="REFRAINAVG_FLAG" class="java.math.BigDecimal"/>
+	<field name="INTSETBEGIN_AMT" class="java.math.BigDecimal"/>
+	<field name="SUBPERIOD_PERCENT" class="java.math.BigDecimal"/>
+	<field name="SUBPERIOD_AMT" class="java.math.BigDecimal"/>
+	<field name="SUBCOUNT_AMT" class="java.math.BigDecimal"/>
+	<field name="SUBPERIOD_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="INSPERIOD_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="LOANCLR_FLAG" class="java.math.BigDecimal"/>
+	<group name="group_memberno">
+		<groupExpression><![CDATA[$F{MEMBER_NO}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a72aa1ac-64ef-4ea9-aafa-24a6e0ddff4d" x="121" y="2" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[CARD_PERSON]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b7683baa-145d-436c-9f67-12507fc53dbf" x="271" y="2" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[LOANCONTRACT_NO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement uuid="29eb9684-e12b-4d51-848e-241e0c0bccd3" x="121" y="0" width="100" height="20">
+					<printWhenExpression><![CDATA[$V{group_memberno_COUNT} == 1 ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CARD_PERSON}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b928f623-2ff2-4c38-8701-3175e38c57a8" x="251" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LOANCONTRACT_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d49bd349-cf82-4b70-8f5c-7a69c4112001" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{group_memberno_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

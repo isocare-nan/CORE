@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_sl_loan_print_nan_sub" language="groovy" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="0" rightMargin="20" topMargin="0" bottomMargin="0" uuid="28a57f16-876e-4fbc-879f-effa63157384">
+	<property name="ireport.zoom" value="1.4641000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="coop_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+
+LNCONTMASTER.coop_id,LNCONTMASTER.LOANCONTRACT_NO,LNREQLOANCOLL.REF_COLLNO,LNREQLOANCOLL.DESCRIPTION
+
+from LNCONTMASTER
+LEFT JOIN LNREQLOANCOLL on trim(LNCONTMASTER.loanrequest_docno) = trim(LNREQLOANCOLL.loanrequest_docno)
+where trim(LNCONTMASTER.coop_id) = $P{coop_id}
+and trim(LNCONTMASTER.LOANCONTRACT_NO) = $P{LOANCONTRACT_NO}
+and LNREQLOANCOLL.REF_COLLNO is not null
+order by LNREQLOANCOLL.REF_COLLNO,LNREQLOANCOLL.DESCRIPTION asc]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="REF_COLLNO" class="java.lang.String"/>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="71" height="17" uuid="72978fac-7ff0-43c5-8c9e-1340d29ae12a"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANCONTRACT_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="128" y="0" width="194" height="17" uuid="55e3bcd0-7ef4-4f89-9f4a-62c0074ab36a"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph lineSpacing="Fixed"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESCRIPTION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

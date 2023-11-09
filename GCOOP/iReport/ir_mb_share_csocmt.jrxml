@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mb_share_cso_cmt" language="groovy" pageWidth="864" pageHeight="842" columnWidth="824" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6bd32da0-1cbc-4e38-bc0c-9f60af333678">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="an_startshare" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="an_endshare" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select *
+ from (
+select
+mbmembmaster.member_no ,
+mbucfprename.prename_desc ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+mbmembmaster.membgroup_code ,
+mbucfmembgroup.membgroup_desc ,
+shsharemaster.sharestk_amt ,
+nvl( lnmaster.principal_balance , 0 ) as principal_balance ,
+sum ( nvl( decode ( wcdeptmaster.branch_id , '0024' , decode( wcdeptmaster.deptclose_status , 0 , 1 , 0 ) , 0) , 0 ) ) as dsWz ,
+sum( nvl( decode ( wcdeptmaster.branch_id , '1002' , decode( wcdeptmaster.deptclose_status , 0 , 1 , 0 ) , 0) , 0 ) ) as dsWc
+from mbmembmaster
+left join shsharemaster on mbmembmaster.member_no = shsharemaster.member_no
+left join wcdeptmaster on mbmembmaster.member_no = wcdeptmaster.member_no
+left join mbucfprename on mbmembmaster.prename_code = mbucfprename.prename_code
+left join mbucfmembgroup on trim( mbucfmembgroup.membgroup_code ) = trim( mbmembmaster.membgroup_code)
+left join ( select ln.member_no ,nvl(  sum( nvl( ln.principal_balance , 0 ) ), 0 ) as principal_balance from lncontmaster ln where ln.contract_status > 0 group by ln.member_no ) lnmaster on mbmembmaster.member_no = lnmaster.member_no
+where mbmembmaster.coop_id = $P{as_coopid}
+and  shsharemaster.sharestk_amt*10 between $P{an_startshare} and $P{an_endshare}
+and mbmembmaster.resign_status = 0
+and wcdeptmaster.branch_id in ( '0024' , '1002' )
+group by mbmembmaster.member_no ,
+mbucfprename.prename_desc ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+mbmembmaster.membgroup_code ,
+mbucfmembgroup.membgroup_desc ,
+shsharemaster.sharestk_amt ,
+lnmaster.principal_balance
+order by mbmembmaster.member_no
+) aaa
+where aaa.dswz = 0 and aaa.dswc = 1]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="SHARESTK_AMT" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="DSWZ" class="java.math.BigDecimal"/>
+	<field name="DSWC" class="java.math.BigDecimal"/>
+	<variable name="count" class="java.math.BigDecimal" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="56" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1711ddc9-87f5-4d13-b39e-99f0b2b68285" x="0" y="0" width="824" height="36"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["'รายชื่อสมาชิกที่เป็น สสอค. และ สสชสอ. ที่มีหุ้นระหว่าง "+ $P{an_startshare} + " - " + $P{an_endshare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c30783fc-ac74-46ce-9d3e-95a616ec6371" x="0" y="36" width="104" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[เลขสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="63b2284c-a48a-485e-af7f-b16c23ce2d49" x="104" y="36" width="173" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ชื่อ - นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2687baec-80e0-4333-97d7-d50d18d25295" x="277" y="36" width="182" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ชื่อหน่วย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d4921c9-418e-4db9-b3c6-038861136f49" x="459" y="36" width="97" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ทุนเรือนหุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="381cb2c9-d4f5-48d9-8b95-000017fe740b" x="674" y="36" width="75" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[สส.ชสอ.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8591eb87-53af-4038-9257-1f8b62188b2f" x="749" y="36" width="75" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[สสอค.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="102a1cef-bbe3-4027-adb4-b91a6ce268ff" x="556" y="36" width="118" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[หนี้คงเหลือ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement uuid="8bd99aef-3941-48bd-914d-a5f973b4559c" x="30" y="0" width="74" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f92dc9b8-a42b-4a6c-bde4-fa80c818e2b2" x="104" y="0" width="173" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}+$F{MEMB_NAME}+"  "+$F{MEMB_SURNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="03e04e81-83ce-44d1-8aba-76151d8608c2" x="277" y="0" width="182" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE}.trim()+"-"+$F{MEMBGROUP_DESC}.trim()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="false">
+				<reportElement uuid="fb0459a2-061e-45d4-8f28-89fcb72b4e3d" x="459" y="0" width="97" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SHARESTK_AMT} *10]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f2a5eaf0-c749-4766-9869-2370ffc70455" x="674" y="0" width="75" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{DSWZ} == 1 ? "เป็น" : "ไม่เป็น")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="39d91efb-f735-4699-ba74-5d531eb0fb27" x="749" y="0" width="75" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{DSWC} == 1 ? "เป็น" : "ไม่เป็น")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8fc54ca3-22a6-4e0d-a071-b8481fb4bec5" x="0" y="0" width="30" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{count}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="2085db56-48d8-422a-ba96-53219ca62781" x="556" y="0" width="118" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRINCIPAL_BALANCE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

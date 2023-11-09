@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_sl_paylate_nan" language="groovy" pageWidth="1296" pageHeight="595" orientation="Landscape" columnWidth="1256" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="905a43c8-7d46-4c90-9d34-d76fe90a9103">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_sloantype" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_eloantype" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_smembgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_emembgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_sdate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="an_scountdate" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="an_ecountdate" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\GCOOP_ALL\\CORE\\GCOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+mbucfprename.prename_desc ,
+mbmembmaster.member_no ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+mbmembmaster.remark ,
+mbmembmaster.addr_no ,
+mbmembmaster.addr_moo ,
+mbmembmaster.addr_soi ,
+mbmembmaster.addr_village ,
+mbmembmaster.addr_road ,
+mbucfprovince.province_desc ,
+mbucfdistrict.district_desc ,
+mbucftambol.tambol_desc ,
+mbmembmaster.addr_phone ,
+mbmembmaster.addr_mobilephone ,
+shsharemaster.sharestk_amt ,
+loanmaster.loancontract_no ,
+loanmaster.period_payment ,
+loanmaster.loanapprove_amt ,
+loanmaster.loantype_code  ,
+loanmaster.principal_balance ,
+loanmaster.count_date
+from (
+SELECT LNCONTMASTER.LOANCONTRACT_NO,
+LNCONTMASTER.period_payment ,
+LNCONTMASTER.loanapprove_amt ,
+LNCONTMASTER.loantype_code  ,
+LNCONTMASTER.MEMBER_NO,
+LNCONTMASTER.PRINCIPAL_BALANCE,
+floor(sysdate - lncontmaster.lastpayment_date) as count_date
+FROM LNCONTMASTER
+left join LNUCFCONTRACTTYPE on LNCONTMASTER.CONTRACT_TYPE = LNUCFCONTRACTTYPE.CONTRACT_TYPE
+ WHERE lncontmaster.contract_status > 0
+and lncontmaster.PRINCIPAL_BALANCE > 0
+and lncontmaster.lastpayment_date <= $P{adtm_sdate}
+and lncontmaster.loantype_code not in ('11','25')
+AND  lncontmaster.loantype_code between $P{as_sloantype} and $P{as_eloantype}
+and floor( $P{adtm_sdate} - lncontmaster.lastpayment_date) between $P{an_scountdate} and $P{an_ecountdate}
+union
+SELECT LNCONTMASTER.LOANCONTRACT_NO,
+LNCONTMASTER.period_payment ,
+LNCONTMASTER.loanapprove_amt ,
+LNCONTMASTER.loantype_code  ,
+LNCONTMASTER.MEMBER_NO,
+LNCONTMASTER.PRINCIPAL_BALANCE,
+floor(sysdate - lncontmaster.lastcalint_date) as count_date
+FROM LNCONTMASTER
+left join LNUCFCONTRACTTYPE on LNCONTMASTER.CONTRACT_TYPE = LNUCFCONTRACTTYPE.CONTRACT_TYPE
+ WHERE lncontmaster.contract_status > 0
+and lncontmaster.PRINCIPAL_BALANCE > 0
+and lncontmaster.lastcalint_date <= $P{adtm_sdate}
+and lncontmaster.loantype_code in ('11','25')
+AND  lncontmaster.loantype_code between $P{as_sloantype} and $P{as_eloantype}
+and floor( $P{adtm_sdate} - lncontmaster.lastcalint_date)  between $P{an_scountdate} and $P{an_ecountdate}
+union
+SELECT LNCONTMASTER.LOANCONTRACT_NO,
+LNCONTMASTER.period_payment ,
+LNCONTMASTER.loanapprove_amt ,
+LNCONTMASTER.loantype_code  ,
+LNCONTMASTER.MEMBER_NO,
+LNCONTMASTER.PRINCIPAL_BALANCE,
+floor(sysdate - lncontmaster.lastcalint_date) as count_date
+FROM LNCONTMASTER
+left join LNUCFCONTRACTTYPE on LNCONTMASTER.CONTRACT_TYPE = LNUCFCONTRACTTYPE.CONTRACT_TYPE
+ WHERE lncontmaster.contract_status > 0
+and lncontmaster.PRINCIPAL_BALANCE > 0
+and lncontmaster.lastpayment_date is null
+and lncontmaster.lastreceive_date <= $P{adtm_sdate}
+AND  lncontmaster.loantype_code between $P{as_sloantype} and $P{as_eloantype}
+and floor( $P{adtm_sdate} - lncontmaster.lastcalint_date)  between $P{an_scountdate} and $P{an_ecountdate}
+) loanmaster
+left join mbmembmaster on mbmembmaster.member_no = loanmaster.member_no
+left join shsharemaster on mbmembmaster.member_no = shsharemaster.member_no
+left join MBUCFPRENAME on  MBUCFPRENAME.PRENAME_CODE = MBMEMBMASTER.PRENAME_CODE
+left join MBUCFMEMBGROUP on trim( MBMEMBMASTER.MEMBGROUP_CODE)  = trim( MBUCFMEMBGROUP.MEMBGROUP_CODE )
+left join mbucfprovince on mbmembmaster.province_code = mbucfprovince.province_code
+left join mbucfdistrict on mbmembmaster.amphur_code = mbucfdistrict.district_code
+left join mbucftambol on mbmembmaster.tambol_code = mbucftambol.tambol_code
+where trim( MBMEMBMASTER.membgroup_code ) between trim( $P{as_smembgroup} ) and trim( $P{as_emembgroup} )
+and MBMEMBMASTER.coop_id = $P{as_coopid}
+order by MBMEMBMASTER.membgroup_code , MBMEMBMASTER.member_no]]>
+	</queryString>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="ADDR_NO" class="java.lang.String"/>
+	<field name="ADDR_MOO" class="java.lang.String"/>
+	<field name="ADDR_SOI" class="java.lang.String"/>
+	<field name="ADDR_VILLAGE" class="java.lang.String"/>
+	<field name="ADDR_ROAD" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="DISTRICT_DESC" class="java.lang.String"/>
+	<field name="TAMBOL_DESC" class="java.lang.String"/>
+	<field name="ADDR_PHONE" class="java.lang.String"/>
+	<field name="ADDR_MOBILEPHONE" class="java.lang.String"/>
+	<field name="SHARESTK_AMT" class="java.math.BigDecimal"/>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="PERIOD_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="LOANAPPROVE_AMT" class="java.math.BigDecimal"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="COUNT_DATE" class="java.math.BigDecimal"/>
+	<group name="member_no">
+		<groupExpression><![CDATA[$F{MEMBER_NO}]]></groupExpression>
+		<groupHeader>
+			<band height="91">
+				<textField>
+					<reportElement uuid="fb28e8d7-2b62-43a6-ba5b-8d7fe0e62ed6" x="0" y="0" width="200" height="20"/>
+					<textElement>
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PRENAME_DESC}+$F{MEMB_NAME}+"  "+$F{MEMB_SURNAME}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="bf7bf17f-9c88-4450-be0c-e0d30cc920d4" x="200" y="0" width="68" height="20"/>
+					<textElement textAlignment="Center">
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="e8e6fc47-f894-4201-a672-dbcc64d779f2" x="0" y="20" width="200" height="71"/>
+					<textElement>
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[( $F{ADDR_NO}==null ? "" : $F{ADDR_NO} ) +
+( $F{ADDR_MOO}==null ? "" : " หมู่ " + $F{ADDR_MOO}  ) +
+( $F{ADDR_SOI}==null ? "" : " ซอย " + $F{ADDR_SOI}  ) +
+( $F{ADDR_VILLAGE}==null ? "" : " หมู่บ้าน " + $F{ADDR_VILLAGE}  ) +
+( $F{ADDR_ROAD}==null ? "" : " ถนน " + $F{ADDR_ROAD}  ) +
+( $F{TAMBOL_DESC}==null ? "" : " ตำบล " + $F{TAMBOL_DESC}  ) +
+( $F{DISTRICT_DESC}==null ? "" : " อำเภอ " + $F{DISTRICT_DESC}  ) +
+( $F{PROVINCE_DESC}==null ? "" : " จังหวัด " + $F{PROVINCE_DESC}  )+
+( $F{ADDR_PHONE}==null ? "" : " เบอร์โทร " + $F{ADDR_PHONE}  )+
+( $F{ADDR_MOBILEPHONE}==null ? "" : " เบอร์มือถือ " + $F{ADDR_MOBILEPHONE}  )]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement uuid="0f983fd2-2ba9-4ed5-8e77-fc52b1568acc" x="433" y="0" width="792" height="20"/>
+					<subreportParameter name="an_ecountdate">
+						<subreportParameterExpression><![CDATA[$P{an_ecountdate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="adtm_sdate">
+						<subreportParameterExpression><![CDATA[$P{adtm_sdate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="an_scountdate">
+						<subreportParameterExpression><![CDATA[$P{an_scountdate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="as_memberno">
+						<subreportParameterExpression><![CDATA[$F{MEMBER_NO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "ir_sl_paylate_nan_nest_2.jasper"]]></subreportExpression>
+				</subreport>
+				<textField pattern="#,##0">
+					<reportElement uuid="a8dbb64c-dec5-499c-973a-eb6c66faee89" x="268" y="0" width="85" height="20"/>
+					<textElement textAlignment="Right">
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SHARESTK_AMT}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="9be476e4-d774-4d7a-b88f-122a424f0d76" x="353" y="0" width="80" height="20"/>
+					<textElement textAlignment="Center">
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PROVINCE_DESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="41" splitType="Stretch">
+			<textField>
+				<reportElement uuid="60ed3d3a-5e65-4f19-a017-d90b93a63ae2" x="0" y="0" width="1225" height="21"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รายงานค้างชำระ สหกรณ์ออมทรัพย์ครูน่าน"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="130141a8-a745-4795-8d00-6018df68b4fa" x="200" y="21" width="68" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="43bec82f-5071-46b2-8b8f-01e9d89c913f" x="0" y="21" width="200" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ชื่อนามสกุล - ที่อยุ่]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2d8b7ada-54be-49b6-baa3-b9cc219f76fb" x="268" y="21" width="85" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ทุนเรือนหุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6af0e32a-f7e0-4008-9441-89520899d167" x="433" y="21" width="39" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ประเภท]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c529f258-275f-4d80-9847-57715f8110f2" x="353" y="21" width="80" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[จังหวัด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f9237464-b3b0-4ec9-ab25-adcf4abd2688" x="472" y="21" width="61" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขสัญญา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="388fcfdc-ec92-41b5-b195-62a81eb31420" x="533" y="21" width="75" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ยอดอนุมัติ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e82f65d9-e81e-4b17-b6d1-da86136c0182" x="608" y="21" width="75" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ยอดคงเหลือ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9339433e-9eb9-439c-ab50-afcd86023e1f" x="683" y="21" width="51" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขผู้ค้ำ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2062b735-de30-4053-94af-fd9728b77d0b" x="734" y="21" width="338" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ชื่อผู้ค้ำ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="91bc2239-f3e4-4b32-9505-6a611e1a5678" x="1072" y="21" width="107" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ส่งต่องวด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="340b39c8-7bc9-46bf-a3f1-17000f51dfee" x="1179" y="21" width="46" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[วันขาดส่ง]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

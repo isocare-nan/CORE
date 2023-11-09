@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mbshr_member_sex_zero" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9a0619c6-cca0-4080-9f3e-dbdb53af0314">
+	<property name="ireport.zoom" value="2.1435888100000016"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_srecvperiod" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_erecvperiod" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+slclsmthbalance.member_no ,
+ft_getmbname(slclsmthbalance.coop_id , slclsmthbalance.member_no) as fullname ,
+mbmembmaster.membgroup_code ,
+mbucfmembgroup.membgroup_desc
+from slclsmthbalance
+left join mbmembmaster on slclsmthbalance.member_no = mbmembmaster.member_no and slclsmthbalance.coop_id = mbmembmaster.coop_id
+left join mbucfmembgroup on trim(mbmembmaster.membgroup_code)= trim(mbucfmembgroup.membgroup_code )
+where slclsmthbalance.clsmth_period = $P{as_srecvperiod}
+and slclsmthbalance.member_no not in (select member_no from slclsmthbalance where clsmth_period = $P{as_srecvperiod} and bizz_system = 'SHR' group by member_no )
+and slclsmthbalance.member_no not in (
+select
+distinct slclsmthbalance.member_no
+from slclsmthbalance
+left join mbmembmaster on slclsmthbalance.member_no = mbmembmaster.member_no and slclsmthbalance.coop_id = mbmembmaster.coop_id
+where slclsmthbalance.clsmth_period = $P{as_erecvperiod}
+and slclsmthbalance.member_no not in (select member_no from slclsmthbalance where clsmth_period = $P{as_erecvperiod} and bizz_system = 'SHR' group by member_no )
+)
+group by slclsmthbalance.coop_id ,
+slclsmthbalance.member_no ,
+mbmembmaster.membgroup_code ,
+mbucfmembgroup.membgroup_desc]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="40">
+			<staticText>
+				<reportElement uuid="93852ab2-11fe-418a-bc7a-7b93337b3e77" x="0" y="0" width="455" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[รายชื่อผู้ที่ไม่มีหุ้นแล้ว (ลาออก)แต่ยังมีหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="324b9043-9037-47bd-a23f-9327ec11e040" x="0" y="20" width="29" height="20"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="08fbc078-823f-46c9-aaf6-ef48d3442466" x="33" y="20" width="67" height="20"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[เลขทะเบียน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f9a56f29-8b12-455a-aaf1-8fdd12c40393" x="105" y="20" width="152" height="20"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[ชื่อ - นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="521b0821-9f3f-478f-ac71-078274e1c298" x="262" y="20" width="193" height="20"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[หน่วย]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement uuid="7d8bf014-ba80-4540-936c-f0125bf3a12f" x="0" y="0" width="29" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3dc333e1-dfd0-4a9d-95f7-df118a640ccc" x="33" y="0" width="67" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="13a3353f-7ae6-4200-8c1b-6af72635cb75" x="105" y="0" width="152" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FULLNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="487b8623-a644-4b54-953c-c2f8d55c33ae" x="262" y="0" width="193" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE}.trim() + " - " + $F{MEMBGROUP_DESC}.trim()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="23">
+			<line>
+				<reportElement uuid="f0362e01-329a-45e0-a99e-4d30574c40e9" x="5" y="2" width="450" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="93b58176-6b40-4cb0-9dc7-c5d49a571089" x="105" y="3" width="152" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมทั้งหมด " + $V{COLUMN_COUNT} + " คน"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

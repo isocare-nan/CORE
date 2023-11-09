@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="irpt01011_dp_cuurentbalance_a4" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9753a42-1cae-4acd-9af7-a32bfba43400">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_starttype" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_endtype" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT "DPDEPTMASTER"."DEPTACCOUNT_NO",
+         "DPDEPTMASTER"."DEPTTYPE_CODE",
+         "DPDEPTMASTER"."MEMBER_NO",
+         "DPDEPTMASTER"."DEPTACCOUNT_NAME",
+         "DPDEPTMASTER"."DEPTMONTH_AMT",
+         "DPDEPTMASTER"."PRNCBAL",
+         "DPDEPTMASTER"."ACCUINT_AMT",
+         "DPDEPTTYPE"."DEPTTYPE_DESC",
+         "DPDEPTMASTER"."REMARK",
+         "DPDEPTMASTER"."BOOK_BALANCE",
+         "DPDEPTTYPE"."DEPTTYPE_CODE"
+    FROM "DPDEPTMASTER",
+         "DPDEPTTYPE"
+   WHERE ( "DPDEPTTYPE"."DEPTTYPE_CODE" = "DPDEPTMASTER"."DEPTTYPE_CODE" ) and
+         ( "DPDEPTMASTER"."COOP_ID" = "DPDEPTTYPE"."COOP_ID" ) and
+         ( ( DPDEPTMASTER.DEPTTYPE_CODE between $P{as_starttype}  and $P{as_endtype} ) AND
+         ( DPDEPTMASTER.DEPTCLOSE_STATUS = 0  ) AND
+         ( DPDEPTMASTER.COOP_ID = $P{as_coopid} ) )
+order by  "DPDEPTMASTER"."DEPTTYPE_CODE",   "DPDEPTMASTER"."DEPTACCOUNT_NO"]]>
+	</queryString>
+	<field name="DEPTACCOUNT_NO" class="java.lang.String"/>
+	<field name="DEPTTYPE_CODE" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="DEPTACCOUNT_NAME" class="java.lang.String"/>
+	<field name="DEPTMONTH_AMT" class="java.math.BigDecimal"/>
+	<field name="PRNCBAL" class="java.math.BigDecimal"/>
+	<field name="ACCUINT_AMT" class="java.math.BigDecimal"/>
+	<field name="DEPTTYPE_DESC" class="java.lang.String"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="BOOK_BALANCE" class="java.math.BigDecimal"/>
+	<group name="depttype_code">
+		<groupExpression><![CDATA[$F{DEPTTYPE_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="bcd54c93-f618-40ae-8c9d-87ad5f03e71c" x="0" y="0" width="555" height="20"/>
+					<textElement>
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DEPTTYPE_CODE}+"-"+$F{DEPTTYPE_DESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="3e0aa3f9-71d4-4245-9e3c-78e385261acc" x="0" y="0" width="555" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[รายงานยอดคงเหลือ รายบัญชี]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="af2dc668-67f9-4869-95a4-f54c6e7f6672" x="40" y="0" width="76" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTACCOUNT_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="db04a835-711e-45cb-8a50-a7ac3cbfc023" x="116" y="0" width="62" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="68491cc1-b6ac-4f5f-9223-d4e0a8c8e01b" x="178" y="0" width="218" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTACCOUNT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="95ceb156-d7b8-498b-9356-412b299dc1f6" x="396" y="0" width="159" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRNCBAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="95d795e6-e58f-4c92-b0cb-45f65b3695c9" x="0" y="0" width="40" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

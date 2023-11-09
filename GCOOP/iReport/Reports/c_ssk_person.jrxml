@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="c_ssk_person" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ffefd51c-e244-4fc3-8630-520030400414">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="ssk_no" class="java.lang.String"/>
+	<field name="full_name" class="java.lang.String"/>
+	<field name="to_day" class="java.sql.Timestamp"/>
+	<variable name="variable1" class="java.lang.String">
+		<initialValueExpression><![CDATA[new SimpleDateFormat("dd",new Locale("th","TH")).format($F{to_day})]]></initialValueExpression>
+	</variable>
+	<variable name="variable2" class="java.lang.String">
+		<initialValueExpression><![CDATA[new SimpleDateFormat("MMMM",new Locale("th","TH")).format($F{to_day})]]></initialValueExpression>
+	</variable>
+	<variable name="variable3" class="java.lang.String">
+		<initialValueExpression><![CDATA[new SimpleDateFormat("yyyy",new Locale("th","TH")).format($F{to_day})]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="330">
+			<textField>
+				<reportElement uuid="ed94ae32-2690-4b6e-8d76-cd427f844a7a" x="0" y="122" width="555" height="57"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="32"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{full_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb3a1e82-410e-451f-9f93-086ec02afa78" x="429" y="185" width="107" height="28"/>
+				<textElement>
+					<font fontName="Angsana New" size="24"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ssk_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bf45b245-0943-41f9-8aae-a4244b1448fa" x="230" y="245" width="28" height="28"/>
+				<textElement>
+					<font fontName="Angsana New" size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3898fc35-ce0e-4d27-8589-b1bc22462179" x="297" y="244" width="125" height="28"/>
+				<textElement>
+					<font fontName="Angsana New" size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ed01ac7b-912b-4fe4-877a-3293be56852a" x="404" y="245" width="66" height="28"/>
+				<textElement>
+					<font fontName="Angsana New" size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

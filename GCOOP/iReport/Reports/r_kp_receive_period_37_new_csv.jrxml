@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_kp_receive_period_37_new_csv" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d55b18f6-0b9b-4954-b66a-639fc73c47d1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_period" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_startmembgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_endmembgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select kptempreceive.membgroup_code,
+mbucfmembgroup.membgroup_desc,
+mbmembmaster.member_no,
+mbucfprename.prename_desc,
+ mbmembmaster.memb_name,
+mbmembmaster.memb_surname,
+mbmembmaster.card_person,
+kptempreceive.receipt_no,
+round(kptempreceive.receive_amt,2) as receive_amt,
+
+mbucfprovince.province_desc,
+substr(kptempreceive.recv_period ,1,4) as year,
+(case
+             when  trim(substr(kptempreceive.recv_period,5,6))= '01'  then 'มกราคม'
+             when  trim(substr(kptempreceive.recv_period,5,6))= '02'  then 'กุมภาพันธ์'
+            when  trim(substr(kptempreceive.recv_period,5,6))= '03'  then 'มีนาคม'
+            when  trim(substr(kptempreceive.recv_period,5,6)) = '04' then 'เมษายน'
+            when  trim(substr(kptempreceive.recv_period,5,6))= '05'  then 'พฤษภาคม'
+            when  trim(substr(kptempreceive.recv_period,5,6))= '06'  then 'มิถุนายน'
+            when  trim(substr(kptempreceive.recv_period,5,6))= '07'  then 'กรกฎาคม'
+            when  trim(substr(kptempreceive.recv_period,5,6))= '08'  then 'สิงหาคม'
+            when  trim(substr(kptempreceive.recv_period,5,6))= '09'  then 'กันยายน'
+            when  trim(substr(kptempreceive.recv_period,5,6))= '10' then 'ตุลาคม'
+            when  trim(substr(kptempreceive.recv_period,5,6))= '11'  then 'พฤศจิกายน'
+		   when  trim(substr(kptempreceive.recv_period,5,6))= '12'  then 'ธันวาคม'
+            else ' '
+        END) as Months
+
+from kptempreceive ,
+mbmembmaster ,
+mbucfmembgroup,
+mbucfprename,
+mbucfprovince
+where trim(kptempreceive.membgroup_code) = trim(mbucfmembgroup.membgroup_code)
+and trim(kptempreceive.membgroup_code) between $P{as_startmembgroup} and $P{as_endmembgroup}
+and kptempreceive.member_no = mbmembmaster.member_no
+and mbucfprename.prename_code = mbmembmaster.prename_code
+and mbucfmembgroup.addr_province = mbucfprovince.province_code
+and kptempreceive.receive_amt > 0
+and kptempreceive.keeping_status = 1
+and (kptempreceive.recv_period = $P{as_period})
+and (kptempreceive.coop_id = $P{as_coopid} )
+order by kptempreceive.membgroup_code, mbmembmaster.member_no]]>
+	</queryString>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="CARD_PERSON" class="java.lang.String"/>
+	<field name="RECEIPT_NO" class="java.lang.String"/>
+	<field name="RECEIVE_AMT" class="java.math.BigDecimal"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="YEAR" class="java.lang.String"/>
+	<field name="MONTHS" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e281ca7b-d8ca-4cf9-b08a-6c5aa860496f" x="0" y="0" width="22" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0e5b1156-2fb2-4e27-9a3c-a403ccc3c3f5" x="22" y="0" width="36" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7c4b2b7a-f7d2-4566-a62c-360c9a46b901" x="58" y="0" width="63" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMB_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eafddd94-622e-4865-a680-e3409fffcf08" x="121" y="0" width="64" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMB_SURNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="40e07fe9-0fe8-4fdf-8cd6-01c9d9236d8e" x="185" y="0" width="46" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="98caa53d-0a52-4b0c-a06f-3b11a0e1c8be" x="231" y="0" width="73" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARD_PERSON}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="194a0f81-3c74-4f6f-b7d5-1303560f2146" x="439" y="0" width="52" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RECEIPT_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0f84cd20-78ed-4bc1-92a6-3965cb74fd88" x="344" y="0" width="95" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBGROUP_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1d40741d-d05a-422b-8124-2fd4b4753bf5" x="304" y="0" width="40" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="b1e84227-8207-40da-b092-224735ca6198" x="491" y="0" width="64" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RECEIVE_AMT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

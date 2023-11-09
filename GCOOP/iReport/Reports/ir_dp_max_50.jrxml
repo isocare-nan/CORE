@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_ln_max_50_new" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5de4fa6f-55aa-48d5-8afe-703d25ac4ef5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="adtm_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coop" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from ( select * from ( SELECT  DPDEPTMASTER.member_no , sum( dpdeptstatement.prncbal )  as principal
+    FROM "DPDEPTMASTER",
+			dpdeptstatement
+   WHERE (DPDEPTMASTER.deptaccount_no = dpdeptstatement.deptaccount_no ) and
+			 dpdeptstatement.seq_no = (select max(seq_no) from dpdeptstatement where operate_date <=$P{adtm_date} and DPDEPTMASTER.deptaccount_no= dpdeptstatement.deptaccount_no  )
+and dpdeptstatement.prncbal > 0
+group by  DPDEPTMASTER.member_no
+order by principal desc ) deptmaster
+where ROWNUM <= 50
+) deptmaster
+ , dpdeptmaster , dpdeptstatement dps
+where deptmaster.member_no = dpdeptmaster.member_no
+and dpdeptmaster.deptaccount_no = dps.deptaccount_no
+and dps.seq_no = (
+select max(seq_no) from dpdeptstatement where operate_date <= $P{adtm_date}
+and dps.deptaccount_no= dpdeptstatement.deptaccount_no
+)
+and dps.prncbal > 0]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRINCIPAL" class="java.math.BigDecimal"/>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="DEPTACCOUNT_NO" class="java.lang.String"/>
+	<field name="DEPTTYPE_CODE" class="java.lang.String"/>
+	<field name="MEMCOOP_ID" class="java.lang.String"/>
+	<field name="DEPTOPEN_DATE" class="java.sql.Timestamp"/>
+	<field name="DEPTCLOSE_STATUS" class="java.math.BigDecimal"/>
+	<field name="DEPTCLOSE_DATE" class="java.sql.Timestamp"/>
+	<field name="DEPTACCOUNT_NAME" class="java.lang.String"/>
+	<field name="DEPT_OBJECTIVE" class="java.lang.String"/>
+	<field name="CHECK_DIGIT" class="java.lang.String"/>
+	<field name="DEPTPASSBOOK_NO" class="java.lang.String"/>
+	<field name="CONDFORWITHDRAW" class="java.lang.String"/>
+	<field name="CONTACT_ADDRESS" class="java.lang.String"/>
+	<field name="F_TAX_RATE" class="java.math.BigDecimal"/>
+	<field name="TAXPERSONAL_ID" class="java.lang.String"/>
+	<field name="DEPTMONTH_STATUS" class="java.math.BigDecimal"/>
+	<field name="DEPTMONTH_AMT" class="java.math.BigDecimal"/>
+	<field name="DEPTMONTH_AMT_OLD" class="java.math.BigDecimal"/>
+	<field name="DEPTMONTCHG_DATE" class="java.sql.Timestamp"/>
+	<field name="MONTHINT_STATUS" class="java.math.BigDecimal"/>
+	<field name="MONTHINTPAY_METH" class="java.math.BigDecimal"/>
+	<field name="TRAN_DEPTACC_COOP_ID" class="java.lang.String"/>
+	<field name="TRAN_DEPTACC_NO" class="java.lang.String"/>
+	<field name="TRAN_BANKACC_NO" class="java.lang.String"/>
+	<field name="SPCINT_RATE_STATUS" class="java.math.BigDecimal"/>
+	<field name="SPCINT_RATE" class="java.math.BigDecimal"/>
+	<field name="BEGINBAL" class="java.math.BigDecimal"/>
+	<field name="PRNCBAL" class="java.math.BigDecimal"/>
+	<field name="CHECKPEND_AMT" class="java.math.BigDecimal"/>
+	<field name="SEQUEST_DATE" class="java.sql.Timestamp"/>
+	<field name="LOANGARANTEE_AMT" class="java.math.BigDecimal"/>
+	<field name="SEQUEST_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="SEQUEST_STATUS" class="java.math.BigDecimal"/>
+	<field name="WITHDRAWABLE_AMT" class="java.math.BigDecimal"/>
+	<field name="LASTCALINT_DATE" class="java.sql.Timestamp"/>
+	<field name="ACCUINT_AMT" class="java.math.BigDecimal"/>
+	<field name="INTARREAR_AMT" class="java.math.BigDecimal"/>
+	<field name="ACCUINTPAY_AMT" class="java.math.BigDecimal"/>
+	<field name="ACCUTAXPAY_AMT" class="java.math.BigDecimal"/>
+	<field name="WITHDRAW_COUNT" class="java.math.BigDecimal"/>
+	<field name="RESET_COUNT_DATE" class="java.sql.Timestamp"/>
+	<field name="LASTSTMSEQ_NO" class="java.math.BigDecimal"/>
+	<field name="LASTREC_NO_PB" class="java.math.BigDecimal"/>
+	<field name="LASTPAGE_NO_PB" class="java.math.BigDecimal"/>
+	<field name="LASTLINE_NO_PB" class="java.math.BigDecimal"/>
+	<field name="CHECKBOOK_CODE_PB" class="java.lang.String"/>
+	<field name="LASTREC_NO_CARD" class="java.math.BigDecimal"/>
+	<field name="LASTPAGE_NO_CARD" class="java.math.BigDecimal"/>
+	<field name="LASTLINE_NO_CARD" class="java.math.BigDecimal"/>
+	<field name="CLOSEMONTH_NO" class="java.math.BigDecimal"/>
+	<field name="DOPERATE_BAL" class="java.math.BigDecimal"/>
+	<field name="LASTACCESS_DATE" class="java.sql.Timestamp"/>
+	<field name="PRNC_NO" class="java.math.BigDecimal"/>
+	<field name="LAST_PROCESS_DATE" class="java.sql.Timestamp"/>
+	<field name="MBEGINBAL" class="java.math.BigDecimal"/>
+	<field name="ACCCONT_TYPE" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="LASTMOVEMENT_DATE" class="java.sql.Timestamp"/>
+	<field name="PRNBOOK_STATUS" class="java.math.BigDecimal"/>
+	<field name="TAXSPCRATE_STATUS" class="java.math.BigDecimal"/>
+	<field name="SEQUEST_RESON" class="java.lang.String"/>
+	<field name="DEPTINT_REMAIN" class="java.math.BigDecimal"/>
+	<field name="BOOK_BALANCE" class="java.math.BigDecimal"/>
+	<field name="DEPTACCOUNT_ENAME" class="java.lang.String"/>
+	<field name="COMPANY_ID" class="java.lang.String"/>
+	<field name="CONFIRM_STATUS" class="java.math.BigDecimal"/>
+	<field name="BANK_BRANCH" class="java.lang.String"/>
+	<field name="DEPT_TRANACC_NAME" class="java.lang.String"/>
+	<field name="BANK_CODE" class="java.lang.String"/>
+	<field name="DEPT_AMT" class="java.math.BigDecimal"/>
+	<field name="WITH_AMT" class="java.math.BigDecimal"/>
+	<field name="BOOKNORM_FLAG" class="java.math.BigDecimal"/>
+	<field name="DUE_M" class="java.sql.Timestamp"/>
+	<field name="DUE_Y" class="java.sql.Timestamp"/>
+	<field name="DUE_M_FLAG" class="java.math.BigDecimal"/>
+	<field name="EXPENSE_CODE" class="java.lang.String"/>
+	<field name="EXPENSE_ACCNO" class="java.lang.String"/>
+	<field name="EXPENSE_BRANCH" class="java.lang.String"/>
+	<field name="EXPENSE_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="STARTKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="BOOKCONFIRM_STATUS" class="java.math.BigDecimal"/>
+	<field name="UPDATE_BYENTRYID" class="java.lang.String"/>
+	<field name="UPDATE_BYENTRYIP" class="java.lang.String"/>
+	<field name="ATMCARD_ID" class="java.lang.String"/>
+	<field name="LIMITPRNBAL_FLAG" class="java.math.BigDecimal"/>
+	<field name="LIMITPRNBAL_AMT" class="java.math.BigDecimal"/>
+	<field name="FREEPAY_AMT" class="java.math.BigDecimal"/>
+	<field name="BANK_ACCID" class="java.lang.String"/>
+	<field name="SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="DEPTITEMTYPE_CODE" class="java.lang.String"/>
+	<field name="OPERATE_DATE" class="java.sql.Timestamp"/>
+	<field name="DEPTITEM_AMT" class="java.math.BigDecimal"/>
+	<field name="BALANCE_FORWARD" class="java.math.BigDecimal"/>
+	<field name="CHECK_NO" class="java.lang.String"/>
+	<field name="CHECKDUE_DATE" class="java.sql.Timestamp"/>
+	<field name="CHECK_STATUS" class="java.math.BigDecimal"/>
+	<field name="BANK_BRANCH_CODE" class="java.lang.String"/>
+	<field name="CHRG_AMT" class="java.math.BigDecimal"/>
+	<field name="TAX_AMT" class="java.math.BigDecimal"/>
+	<field name="INT_AMT" class="java.math.BigDecimal"/>
+	<field name="RETINT_AMT" class="java.math.BigDecimal"/>
+	<field name="ITEM_STATUS" class="java.math.BigDecimal"/>
+	<field name="PRNTOPB_STATUS" class="java.math.BigDecimal"/>
+	<field name="PRNTOCARD_STATUS" class="java.math.BigDecimal"/>
+	<field name="ENTRY_ID" class="java.lang.String"/>
+	<field name="ENTRY_DATE" class="java.sql.Timestamp"/>
+	<field name="CLOSEDAY_STATUS" class="java.math.BigDecimal"/>
+	<field name="CALINT_FROM" class="java.sql.Timestamp"/>
+	<field name="CALINT_TO" class="java.sql.Timestamp"/>
+	<field name="CASH_TYPE" class="java.lang.String"/>
+	<field name="AUTHORIZE_ID" class="java.lang.String"/>
+	<field name="MACHINE_ID" class="java.lang.String"/>
+	<field name="NO_BOOK_FLAG" class="java.math.BigDecimal"/>
+	<field name="DATE_ON_CHEQUE" class="java.sql.Timestamp"/>
+	<field name="CHEQUE_PENDING" class="java.math.BigDecimal"/>
+	<field name="FORPRNBK_FLAG" class="java.math.BigDecimal"/>
+	<field name="REF_SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="PAGE_PB" class="java.math.BigDecimal"/>
+	<field name="TRANSEC_NO" class="java.math.BigDecimal"/>
+	<field name="CALINT_FLAG" class="java.math.BigDecimal"/>
+	<field name="WITH_COUNT" class="java.math.BigDecimal"/>
+	<field name="LINE_CARD" class="java.math.BigDecimal"/>
+	<field name="LINE_PB" class="java.math.BigDecimal"/>
+	<field name="DEPTITEM_ADJ" class="java.math.BigDecimal"/>
+	<field name="OPERATE_TIME" class="java.sql.Timestamp"/>
+	<field name="DEPTSLIP_NO" class="java.lang.String"/>
+	<field name="DEPTCOOP_ID" class="java.lang.String"/>
+	<field name="INTWAIT_AMT" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4134afeb-cd23-4390-ac6f-ee774eded14e" x="203" y="2" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[DUEL_DATE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement uuid="5f934362-af39-4e0a-bcd7-7945d8c11f78" x="203" y="45" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DUEL_DATE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

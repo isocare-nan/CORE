@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_nanthyear_avgdividenmem" language="groovy" pageWidth="1095" pageHeight="595" orientation="Landscape" columnWidth="1055" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0dd7faa3-6348-4631-b57f-647579b1dc27">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="96"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="coop_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="div_year" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="start_membgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="end_membgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+yrcfrate.divpercent_rate ,
+yrcfrate.avgpercent_rate ,
+mbucfmembgroupcontrol.membgroup_control ,
+mbucfmembgroupcontrol.membgroup_controldesc ,
+mbucfmembgroup.membgroup_code ,
+mbucfmembgroup.membgroup_desc ,
+mbucfprename.prename_desc ,
+mbmembmaster.member_no ,
+mbmembmaster.memb_name ,
+mbmembmaster.memb_surname ,
+yrdivmaster.div_amt ,
+yrdivmaster.avg_amt ,
+yrdivmaster.item_balamt ,
+yraccid.expense_accid ,
+dpdeptmaster.depttype_code ,
+yraccid.moneytype_code ,
+yraccid.methpaytype_code ,
+nvl( (select sum( yrreqmethpaydet.pay_amt)  from yrreqmethpaydet where methpaytype_code = 'SHR' and yrreqmethpaydet.methreq_docno = yrreqmethpay.methreq_docno ) , 0 ) as sum_shr ,
+nvl( (select sum( yrreqmethpaydet.pay_amt)  from yrreqmethpaydet where methpaytype_code = 'DEP' and yrreqmethpaydet.methreq_docno = yrreqmethpay.methreq_docno ) , 0 ) as sum_dep ,
+nvl( (select sum( yrreqmethpaydet.pay_amt)  from yrreqmethpaydet where methpaytype_code = 'CSN' and yrreqmethpaydet.methreq_docno = yrreqmethpay.methreq_docno ) , 0 ) as sum_csn ,
+nvl( (select sum( yrreqmethpaydet.pay_amt)  from yrreqmethpaydet where methpaytype_code = 'CST' and yrreqmethpaydet.methreq_docno = yrreqmethpay.methreq_docno ) , 0 ) as sum_cst ,
+nvl( (select sum( yrreqmethpaydet.pay_amt)  from yrreqmethpaydet where methpaytype_code = 'CSO' and yrreqmethpaydet.methreq_docno = yrreqmethpay.methreq_docno ) , 0 ) as sum_cso ,
+nvl( (select sum( yrreqmethpaydet.pay_amt)  from yrreqmethpaydet where methpaytype_code = 'CMT' and yrreqmethpaydet.methreq_docno = yrreqmethpay.methreq_docno ) , 0 ) as sum_cmt ,
+nvl( (select sum( yrreqmethpaydet.pay_amt)  from yrreqmethpaydet where methpaytype_code = 'INS' and yrreqmethpaydet.methreq_docno = yrreqmethpay.methreq_docno ) , 0 ) as sum_ins ,
+nvl( ( select sum ( yrbglonmaster.interest_accum ) from yrbglonmaster where yrbglonmaster.div_year = $P{div_year}) , 0 ) as real_interest ,
+nvl( ( select sum ( yrbgshrmaster.sharestk_amt ) from yrbgshrmaster where yrbgshrmaster.div_year =  $P{div_year}) , 0 ) as real_share
+from yrbgmaster
+left join yrcfrate on yrbgmaster.coop_id = yrcfrate.coop_id and trim ( yrbgmaster.div_year )  = trim( yrcfrate.div_year )
+left join yrdivmaster on trim( yrdivmaster.div_year ) = trim( yrbgmaster.div_year ) and  trim( yrdivmaster.member_no ) = trim( yrbgmaster.member_no )
+left join mbucfmembgroup on trim( yrbgmaster.membgroup_code ) = trim( mbucfmembgroup.membgroup_code )
+left join mbucfmembgroupcontrol on trim( mbucfmembgroup.membgroup_control ) = trim( mbucfmembgroupcontrol.membgroup_control )
+left join mbmembmaster on yrbgmaster.member_no = mbmembmaster.member_no
+left join mbucfprename on mbmembmaster.prename_code = mbucfprename.prename_code
+left join yrreqmethpay on yrbgmaster.div_year = yrreqmethpay.div_year and  yrbgmaster.member_no = yrreqmethpay.member_no
+left join ( select yrreqmethpaydet.methreq_docno , yrreqmethpaydet.moneytype_code , yrreqmethpaydet.methpaytype_code ,  yrreqmethpaydet.expense_accid from yrreqmethpaydet where yrreqmethpaydet.paytype_code = 'ALL' ) yraccid on yraccid.methreq_docno = yrreqmethpay.methreq_docno
+left join dpdeptmaster on yraccid.expense_accid = dpdeptmaster.deptaccount_no
+where yrbgmaster.coop_id = $P{coop_id}
+and trim( yrbgmaster.div_year ) = $P{div_year}
+and trim( yrbgmaster.membgroup_code ) between $P{start_membgroup} and $P{end_membgroup}
+order by yrbgmaster.membgroup_code ,yrbgmaster.member_no]]>
+	</queryString>
+	<field name="DIVPERCENT_RATE" class="java.math.BigDecimal"/>
+	<field name="AVGPERCENT_RATE" class="java.math.BigDecimal"/>
+	<field name="MEMBGROUP_CONTROL" class="java.lang.String"/>
+	<field name="MEMBGROUP_CONTROLDESC" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="DIV_AMT" class="java.math.BigDecimal"/>
+	<field name="AVG_AMT" class="java.math.BigDecimal"/>
+	<field name="ITEM_BALAMT" class="java.math.BigDecimal"/>
+	<field name="EXPENSE_ACCID" class="java.lang.String"/>
+	<field name="DEPTTYPE_CODE" class="java.lang.String"/>
+	<field name="MONEYTYPE_CODE" class="java.lang.String"/>
+	<field name="METHPAYTYPE_CODE" class="java.lang.String"/>
+	<field name="SUM_SHR" class="java.math.BigDecimal"/>
+	<field name="SUM_DEP" class="java.math.BigDecimal"/>
+	<field name="SUM_CSN" class="java.math.BigDecimal"/>
+	<field name="SUM_CST" class="java.math.BigDecimal"/>
+	<field name="SUM_CSO" class="java.math.BigDecimal"/>
+	<field name="SUM_CMT" class="java.math.BigDecimal"/>
+	<field name="SUM_INS" class="java.math.BigDecimal"/>
+	<field name="REAL_INTEREST" class="java.math.BigDecimal"/>
+	<field name="REAL_SHARE" class="java.math.BigDecimal"/>
+	<variable name="sum_grp_div" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Sum">
+		<variableExpression><![CDATA[$F{DIV_AMT}]]></variableExpression>
+	</variable>
+	<variable name="sum_grp_avg" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Sum">
+		<variableExpression><![CDATA[$F{AVG_AMT}]]></variableExpression>
+	</variable>
+	<variable name="sum_grp_shr" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_SHR}]]></variableExpression>
+	</variable>
+	<variable name="sum_grp_cmt" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_CMT}]]></variableExpression>
+	</variable>
+	<variable name="sum_grp_cso" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_CSO}]]></variableExpression>
+	</variable>
+	<variable name="sum_grp_dep" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Sum">
+		<variableExpression><![CDATA[( $F{METHPAYTYPE_CODE} == "DEP"? $F{ITEM_BALAMT}-$F{SUM_SHR}-$F{SUM_CSO}-$F{SUM_CMT} : 0 )]]></variableExpression>
+	</variable>
+	<variable name="sum_grp" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Sum">
+		<variableExpression><![CDATA[$F{ITEM_BALAMT}-$F{SUM_SHR}-$F{SUM_CSO}-$F{SUM_CMT}-( $F{METHPAYTYPE_CODE} == "DEP"? $F{ITEM_BALAMT}-$F{SUM_SHR}-$F{SUM_CSO}-$F{SUM_CMT} : 0 )]]></variableExpression>
+	</variable>
+	<variable name="sum_all_div" class="java.lang.String"/>
+	<variable name="sum_all_avg" class="java.lang.String"/>
+	<variable name="sum_all_shr" class="java.lang.String"/>
+	<variable name="sum_all_cmt" class="java.lang.String"/>
+	<variable name="sum_all_cso" class="java.lang.String"/>
+	<variable name="sum_all_dep" class="java.lang.String"/>
+	<variable name="sum_all" class="java.lang.String"/>
+	<variable name="sum_grp_ins" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_INS}]]></variableExpression>
+	</variable>
+	<group name="membgroup_code">
+		<groupExpression><![CDATA[$F{MEMBGROUP_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="7dc3878a-61d9-4188-a119-f38f61704b32" x="0" y="0" width="1055" height="20"/>
+					<textElement>
+						<font fontName="AngsanaUPC" size="16"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE} + " : " +$F{MEMBGROUP_DESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="40" splitType="Stretch">
+			<textField>
+				<reportElement uuid="4a811d8b-1a2e-4341-a3f5-850e0b03e66f" x="0" y="20" width="1055" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["รายงานปันผลเฉลี่ยคืน  ประจำปี "+$P{div_year}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c1c93696-1692-42d2-b82c-7a6282803eee" x="0" y="0" width="1055" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[สหกรณ์ออมทรัพย์ครูน่าน จำกัด
+]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="c10d4f10-ba14-42bc-9fdb-bbe70fcdceea" x="0" y="0" width="27" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ad272d85-76e1-4728-a923-3e0f2b6b59a0" x="232" y="0" width="70" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[ปันผล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c30ee14d-1674-4b61-bcc1-047133eb8235" x="302" y="0" width="57" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[เฉลี่ยคืน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="66d94c87-f586-4836-bfff-10e8d7debb48" x="359" y="0" width="80" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[หักซื้อหุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="40f52b55-5e2e-4096-9c1c-7017f04f9127" x="589" y="0" width="70" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[โอนเงินฝาก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7c8e4166-9f2e-4714-a7aa-a3b4e0bfe811" x="439" y="0" width="80" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[โอนครูไทย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="64272653-bca1-4d03-a25e-bee1d9692dcd" x="519" y="0" width="70" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[โอนชุมนุม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4fd53d30-f4eb-41c6-9ad4-7d4d7f8abb98" x="869" y="0" width="87" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[คงเหลือ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8ccfe45b-3569-46b8-8401-5df3b293b7dd" x="956" y="0" width="99" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[เลขบัญชี]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a8a57ac3-5e40-4ad1-b664-8a5fdc1abd23" x="27" y="0" width="56" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[เลขที่สมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="78d7a501-7fd6-47d1-9f30-f085ac205cc3" x="83" y="0" width="149" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="16"/>
+				</textElement>
+				<text><![CDATA[ชื่อ - นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="88969636-ea38-42a8-823b-b17b834c0c45" x="659" y="0" width="70" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<text><![CDATA[ประกัน สอ.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="eca4e699-9ddb-45cb-a132-b09ce67d5b07" x="729" y="0" width="70" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<text><![CDATA[สฌอน.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b2a7201-c9f6-4ca1-a1ce-14f113a61b29" x="799" y="0" width="70" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<text><![CDATA[สสสท.]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="dae5cdd9-7619-420b-81e9-0d8018046894" x="0" y="0" width="27" height="20"/>
+				<textElement>
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{membgroup_code_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="587453d0-b770-4438-8a5e-ec0354fe3ccd" x="27" y="0" width="56" height="20"/>
+				<textElement>
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e0d643b8-b833-4420-9358-8b1b64d95c36" x="83" y="0" width="149" height="20"/>
+				<textElement>
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}+$F{MEMB_NAME}+"  "+$F{MEMB_SURNAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="beae001d-fa00-4177-b832-99882bf10e3a" x="232" y="0" width="70" height="20"/>
+				<textElement>
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIV_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="fe91890c-508a-44f6-8487-3179eac03380" x="302" y="0" width="57" height="20"/>
+				<textElement>
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AVG_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="27a63ed2-9ba8-403f-8134-5ce70fb25a9b" x="359" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_SHR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="9ad41a1a-8717-4119-adf7-a030412b6661" x="589" y="0" width="70" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{METHPAYTYPE_CODE} == "DEP"? $F{DIV_AMT}+$F{AVG_AMT}-$F{SUM_SHR}-$F{SUM_CSO}-$F{SUM_CMT}-$F{SUM_INS}-$F{SUM_CSN}-$F{SUM_CST} : 0 )]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="8351e513-3254-4a88-a6e5-403ae5a169af" x="519" y="0" width="70" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_CSO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d0abfc5b-156f-48df-b935-5bec7786ea1f" x="439" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_CMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="e73fed09-5463-4f1a-a55b-1ab97a7ef84b" x="869" y="0" width="87" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ITEM_BALAMT}-$F{SUM_SHR}-$F{SUM_CSO}-$F{SUM_CMT}-$F{SUM_INS}-$F{SUM_CSN}-$F{SUM_CST} -( $F{METHPAYTYPE_CODE} == "DEP"? $F{ITEM_BALAMT}-$F{SUM_SHR}-$F{SUM_CSO}-$F{SUM_CMT}-$F{SUM_INS}-$F{SUM_CSN}-$F{SUM_CST} : 0 )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3f10165e-8e00-4ea2-a2b5-30074b175d6f" x="956" y="0" width="99" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EXPENSE_ACCID}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="583799b6-8286-4147-b4c5-84a8ce4277d5" x="659" y="0" width="70" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_INS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="091f5cff-bb1f-4084-8cc5-03211d0e03b7" x="729" y="0" width="70" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_CSN}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c29e2a7f-8820-49df-bf1a-fae14d6d5905" x="799" y="0" width="70" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="AngsanaUPC" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_CST}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
