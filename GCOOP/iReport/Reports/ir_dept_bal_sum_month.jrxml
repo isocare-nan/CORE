@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_dept_bal_sum_month" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="50fbcb7a-f22a-431d-a637-df926e44c151">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="s_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="e_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="s_depttype" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="e_depttype" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT DPDEPTMASTER.DEPTACCOUNT_NO,
+         DPDEPTTYPE.DEPTTYPE_CODE,
+         DPDEPTTYPE.DEPTTYPE_DESC,
+         substr( min( DPDEPTSTATEMENT.DEPTACCOUNT_NO || ' ' || to_char( DPDEPTSTATEMENT.OPERATE_DATE , 'yyyymmdd') || ' ' || to_char( 10000000 +  DPDEPTSTATEMENT.SEQ_NO)  || ' ' || to_char( 1000000000000 + DPDEPTSTATEMENT.PRNCBAL ) ) , 12, 8 ) as date_begin,
+         to_number( substr( min( DPDEPTSTATEMENT.DEPTACCOUNT_NO || ' ' || to_char( DPDEPTSTATEMENT.OPERATE_DATE , 'yyyymmdd') || ' ' || to_char( 10000000 + DPDEPTSTATEMENT.SEQ_NO ) || ' ' ||  case  when substr( DPDEPTSTATEMENT.DEPTITEMTYPE_CODE , 1, 1 ) = 'O'  then to_char( 1000000000000   ) else  to_char( 1000000000000 + DPDEPTSTATEMENT.PRNCBAL ) end  ) ,  31 ) ) as begin_balance,
+         to_number( substr( max( DPDEPTSTATEMENT.DEPTACCOUNT_NO || ' ' || to_char( DPDEPTSTATEMENT.OPERATE_DATE , 'yyyymmdd') || ' ' || to_char( 10000000 + DPDEPTSTATEMENT.SEQ_NO ) || ' ' || to_char( 1000000000000 + DPDEPTSTATEMENT.PRNCBAL ) ) , 31 ) ) as forward_balance,
+         sum( case when substr( DPDEPTSTATEMENT.DEPTITEMTYPE_CODE ,1,1) in ( 'D','O' ) and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_dept,
+         sum( case when substr( DPDEPTSTATEMENT.DEPTITEMTYPE_CODE ,1,1) in ( 'W','C') and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_with,
+         sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE  in ( 'INT','IWD','INM','INY' )  and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date}  then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_int,
+         sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE = 'TAX' and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_tax,
+         sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE  = 'ICS'  and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end )  as sum_int_close,
+         sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE in( 'FEE','FEM') and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_fee,
+   		sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE = 'INR' and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_inr,
+		sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE = 'TRL' and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_trl,
+		sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE = 'AJO' and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_ajo,
+		sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE = 'AJI' and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_aji,
+		sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE = 'ERO' and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.entry_id = 'ATMKTB' and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_ero,
+		sum( case when DPDEPTSTATEMENT.DEPTITEMTYPE_CODE = 'ERI' and DPDEPTSTATEMENT.ITEM_STATUS = 1 and DPDEPTSTATEMENT.OPERATE_DATE > $P{s_date} - 1 and DPDEPTSTATEMENT.entry_id = 'ATMKTB' and DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} then DPDEPTSTATEMENT.DEPTITEM_AMT else 0.00 end ) as sum_eri,
+         DPDEPTMASTER.DEPTACCOUNT_NAME,
+	     nvl(stm2.bf_balance,0) as begin_bal_new
+    FROM DPDEPTTYPE,
+         DPDEPTMASTER,
+         DPDEPTSTATEMENT ,
+										( SELECT  to_date ('01' || to_char( $P{s_date} -1 , 'mmyyyy') ,'ddmmyyyy') as st2_date,
+												  to_number( substr( max( DPDEPTSTATEMENT.DEPTACCOUNT_NO || ' ' || to_char( DPDEPTSTATEMENT.OPERATE_DATE , 'yyyymmdd') || ' ' || to_char( 10000000 + DPDEPTSTATEMENT.SEQ_NO ) || ' ' || to_char( 1000000000000 + DPDEPTSTATEMENT.PRNCBAL ) ) , 31 ) ) as bf_balance  ,
+												  DPDEPTMASTER.DEPTACCOUNT_NAME ,
+												  DPDEPTMASTER.DEPTACCOUNT_NO
+													 FROM DPDEPTTYPE,
+															DPDEPTMASTER,
+															DPDEPTSTATEMENT
+													WHERE ( DPDEPTTYPE.DEPTTYPE_CODE = DPDEPTMASTER.DEPTTYPE_CODE ) and
+															( DPDEPTSTATEMENT.DEPTACCOUNT_NO = DPDEPTMASTER.DEPTACCOUNT_NO ) and
+															( DPDEPTSTATEMENT.COOP_ID = DPDEPTMASTER.COOP_ID ) and
+															(     (      ( dpdeptmaster.deptclose_status = 0 ) AND
+															( DPDEPTMASTER.DEPTOPEN_DATE <= $P{s_date} -1 )    ) OR
+															(      (        ( dpdeptmaster.deptclose_status = 1 ) AND
+															( DPDEPTMASTER.DEPTCLOSE_DATE > $P{s_date} -1 )     ) OR
+															(       ( dpdeptmaster.deptclose_status = 1 ) AND
+															( DPDEPTMASTER.DEPTCLOSE_DATE between to_date ('01' || to_char( $P{s_date} -1 , 'mmyyyy') ,'ddmmyyyy') and $P{s_date} -1  )    )    )   ) AND
+															(DPDEPTMASTER.PRNCBAL >= 0  AND
+															DPDEPTSTATEMENT.OPERATE_DATE <= $P{s_date} -1 ) AND
+															( DPDEPTTYPE.DEPTTYPE_CODE between $P{s_depttype} and $P{e_depttype} ) AND
+															(DPDEPTSTATEMENT.ITEM_STATUS = 1 AND DPDEPTMASTER. COOP_ID = $P{as_coopid} )
+												group by DPDEPTMASTER.DEPTACCOUNT_NAME  ,  DPDEPTMASTER.DEPTACCOUNT_NO )  stm2
+   WHERE ( DPDEPTTYPE.DEPTTYPE_CODE = DPDEPTMASTER.DEPTTYPE_CODE ) and
+         ( DPDEPTSTATEMENT.DEPTACCOUNT_NO = DPDEPTMASTER.DEPTACCOUNT_NO ) and
+         ( DPDEPTSTATEMENT.COOP_ID = DPDEPTMASTER.COOP_ID ) and
+		 ( DPDEPTSTATEMENT.DEPTACCOUNT_NO = stm2.DEPTACCOUNT_NO(+) ) and
+         (     (      ( dpdeptmaster.deptclose_status = 0 ) AND
+         ( DPDEPTMASTER.DEPTOPEN_DATE <= $P{e_date} )    ) OR
+         (      (        ( dpdeptmaster.deptclose_status = 1 ) AND
+         ( DPDEPTMASTER.DEPTCLOSE_DATE > $P{e_date} )     ) OR
+         (       ( dpdeptmaster.deptclose_status = 1 ) AND
+         ( DPDEPTMASTER.DEPTCLOSE_DATE between $P{s_date}    and $P{e_date} )     )    )   ) AND
+         (DPDEPTMASTER.PRNCBAL >= 0  AND
+         DPDEPTSTATEMENT.OPERATE_DATE <= $P{e_date} ) AND
+         ( DPDEPTTYPE.DEPTTYPE_CODE between $P{s_depttype} and $P{e_depttype}) AND
+         (DPDEPTSTATEMENT.ITEM_STATUS = 1 AND DPDEPTMASTER. COOP_ID = $P{as_coopid})
+GROUP BY DPDEPTTYPE.DEPTTYPE_CODE,
+         DPDEPTTYPE.DEPTTYPE_DESC,
+         DPDEPTMASTER.DEPTACCOUNT_NO,
+         DPDEPTMASTER.DEPTACCOUNT_NAME,
+		stm2.bf_balance]]>
+	</queryString>
+	<field name="DEPTACCOUNT_NO" class="java.lang.String"/>
+	<field name="DEPTTYPE_CODE" class="java.lang.String"/>
+	<field name="DEPTTYPE_DESC" class="java.lang.String"/>
+	<field name="DATE_BEGIN" class="java.lang.String"/>
+	<field name="BEGIN_BALANCE" class="java.math.BigDecimal"/>
+	<field name="FORWARD_BALANCE" class="java.math.BigDecimal"/>
+	<field name="SUM_DEPT" class="java.math.BigDecimal"/>
+	<field name="SUM_WITH" class="java.math.BigDecimal"/>
+	<field name="SUM_INT" class="java.math.BigDecimal"/>
+	<field name="SUM_TAX" class="java.math.BigDecimal"/>
+	<field name="SUM_INT_CLOSE" class="java.math.BigDecimal"/>
+	<field name="SUM_FEE" class="java.math.BigDecimal"/>
+	<field name="SUM_INR" class="java.math.BigDecimal"/>
+	<field name="SUM_TRL" class="java.math.BigDecimal"/>
+	<field name="SUM_AJO" class="java.math.BigDecimal"/>
+	<field name="SUM_AJI" class="java.math.BigDecimal"/>
+	<field name="SUM_ERO" class="java.math.BigDecimal"/>
+	<field name="SUM_ERI" class="java.math.BigDecimal"/>
+	<field name="DEPTACCOUNT_NAME" class="java.lang.String"/>
+	<field name="BEGIN_BAL_NEW" class="java.math.BigDecimal"/>
+	<sortField name="DEPTTYPE_CODE"/>
+	<sortField name="DEPTACCOUNT_NO"/>
+	<variable name="count_Gdepttype" class="java.lang.Integer" resetType="Group" resetGroup="G_depttype" calculation="Count"/>
+	<variable name="count_deptno" class="java.lang.Integer" resetType="Group" resetGroup="G_depttype" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{DEPTACCOUNT_NO}]]></variableExpression>
+	</variable>
+	<variable name="sum_bal_new" class="java.math.BigDecimal" resetType="Group" resetGroup="G_depttype" calculation="Sum">
+		<variableExpression><![CDATA[$F{BEGIN_BAL_NEW}]]></variableExpression>
+	</variable>
+	<variable name="sum_deposit" class="java.math.BigDecimal" resetType="Group" resetGroup="G_depttype" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_DEPT} + $F{SUM_TRL}]]></variableExpression>
+	</variable>
+	<variable name="sum_withdraw" class="java.math.BigDecimal" resetType="Group" resetGroup="G_depttype" calculation="Sum">
+		<variableExpression><![CDATA[(( $F{SUM_WITH} +  $F{SUM_AJO} +  $F{SUM_FEE} + $F{SUM_ERO} )  -  ( $F{SUM_AJI} +  $F{SUM_ERI} ) ) -  $F{SUM_INT_CLOSE}]]></variableExpression>
+	</variable>
+	<variable name="sum_balance" class="java.math.BigDecimal" resetType="Group" resetGroup="G_depttype" calculation="Sum">
+		<variableExpression><![CDATA[$F{FORWARD_BALANCE}]]></variableExpression>
+	</variable>
+	<variable name="sum_int" class="java.math.BigDecimal" resetType="Group" resetGroup="G_depttype" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_INT} - $F{SUM_INT_CLOSE}]]></variableExpression>
+	</variable>
+	<variable name="sum_tax" class="java.math.BigDecimal" resetType="Group" resetGroup="G_depttype" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_TAX}]]></variableExpression>
+	</variable>
+	<variable name="count_deptno_all" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{DEPTACCOUNT_NO}]]></variableExpression>
+	</variable>
+	<variable name="sum_bal_new_all" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{BEGIN_BAL_NEW}]]></variableExpression>
+	</variable>
+	<variable name="sum_deposit_all" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_DEPT} + $F{SUM_TRL}]]></variableExpression>
+	</variable>
+	<variable name="sum_withdraw_all" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[(( $F{SUM_WITH} +  $F{SUM_AJO} +  $F{SUM_FEE} + $F{SUM_ERO} )  -  ( $F{SUM_AJI} +  $F{SUM_ERI} ) ) -  $F{SUM_INT_CLOSE}]]></variableExpression>
+	</variable>
+	<variable name="sum_balance_all" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{FORWARD_BALANCE}]]></variableExpression>
+	</variable>
+	<variable name="sum_int_all" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_INT} - $F{SUM_INT_CLOSE}]]></variableExpression>
+	</variable>
+	<variable name="sum_tax_all" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUM_TAX}]]></variableExpression>
+	</variable>
+	<group name="G_depttype">
+		<groupExpression><![CDATA[$F{DEPTTYPE_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="a5fcac5d-5bbe-4663-a4a0-ed8c53749b01" x="0" y="0" width="802" height="20"/>
+					<box>
+						<bottomPen lineWidth="0.75"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+						<paragraph leftIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ประเภทบัญชี   " +$F{DEPTTYPE_CODE} + " - " +$F{DEPTTYPE_DESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement uuid="628b0245-e194-4468-8c79-96398e9a699c" x="0" y="0" width="235" height="20"/>
+					<box>
+						<topPen lineWidth="0.75" lineStyle="Dashed"/>
+						<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวมประเภท  "+$F{DEPTTYPE_DESC}+ "   มี   " + $V{count_deptno} + "   บัญชี"]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="53b958f5-4116-4222-ad53-4b54e17c0565" x="235" y="0" width="81" height="20"/>
+					<box>
+						<topPen lineWidth="0.75" lineStyle="Dashed"/>
+						<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_bal_new}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="4d36b3e4-2edf-4447-a952-73b11e403fe6" x="316" y="0" width="81" height="20"/>
+					<box>
+						<topPen lineWidth="0.75" lineStyle="Dashed"/>
+						<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_deposit}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="92fbfebf-1721-4894-91f8-692870d83cde" x="397" y="0" width="81" height="20"/>
+					<box>
+						<topPen lineWidth="0.75" lineStyle="Dashed"/>
+						<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_withdraw}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="57d6e1f2-656a-489e-8d5f-4c2167b88030" x="478" y="0" width="81" height="20"/>
+					<box>
+						<topPen lineWidth="0.75" lineStyle="Dashed"/>
+						<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_balance}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="e38a633c-44e1-42f9-b7a8-38039f25c025" x="721" y="0" width="81" height="20"/>
+					<box>
+						<topPen lineWidth="0.75" lineStyle="Dashed"/>
+						<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_balance}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="5b9fb3b4-81c6-4dd5-99a1-c231f633023d" x="559" y="0" width="81" height="20"/>
+					<box>
+						<topPen lineWidth="0.75" lineStyle="Dashed"/>
+						<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_int}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="ecf60bf0-9b57-4586-bfdd-ba8454f04185" x="640" y="0" width="81" height="20"/>
+					<box>
+						<topPen lineWidth="0.75" lineStyle="Dashed"/>
+						<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_tax}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="90" splitType="Stretch">
+			<textField>
+				<reportElement uuid="63a90532-ef08-4299-9ed3-d633cd9dd016" x="0" y="37" width="802" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เรียงตามเลขบัญชี ณ วันที่  " +new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format($P{s_date})+ " - " + new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format($P{e_date})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="07e126ca-abd6-47f1-a523-f98d4bbf4288" x="0" y="17" width="802" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานเงินฝากคงเหลือ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="5eda4ad7-8127-4726-bde2-c6a435fde8e9" x="640" y="0" width="162" height="17"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["วันที่พิมพ์  " +new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c1e648a6-6045-418e-875d-12a59d3dbcad" x="0" y="70" width="36" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd68204c-0287-4211-91ad-0d88d6fd6e74" x="108" y="70" width="127" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ชื่อบัญชี]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5b68217e-6893-4e96-a116-0816940f8812" x="235" y="70" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ยอดคงเหลือยกมา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4e5fe7e3-8959-4d38-84bd-9de1493c1437" x="36" y="70" width="72" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เลขที่บัญชี]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="18698168-8f3e-44e2-8ad0-8fd6fc258fec" x="316" y="70" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ฝาก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1df453af-f9bc-48c2-bec0-6228d9c25921" x="397" y="70" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ถอน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="51f4451e-f741-46e6-b079-fc68503875b0" x="478" y="70" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ยอดคงเหลือ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="614186aa-79a8-4600-a5b3-9a6aad86281e" x="559" y="70" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ดอกเบี้ย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0d98222b-cf5e-4fba-b66f-5818abab57a1" x="640" y="70" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ภาษี ณ ที่จ่าย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5a041796-e63c-46e7-9790-027568a8ea25" x="721" y="70" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[คงเหลือยกไป]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1ad276dc-0d56-47f1-a639-f44ae6652073" x="0" y="0" width="36" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{G_depttype_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ff8dcc0f-2945-4c4c-90a6-30bca76a6150" x="36" y="0" width="72" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTACCOUNT_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="17c44722-df6b-4bef-ad9b-81b1a723c165" x="108" y="0" width="127" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTACCOUNT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="1e1b1e9b-c529-42cd-8bc5-6c827631a43d" x="235" y="0" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BEGIN_BAL_NEW}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="adab5c8a-182d-4272-b828-a74c8779b6d4" x="316" y="0" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_DEPT} + $F{SUM_TRL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="71b72fe3-626b-4fae-8908-729cae532627" x="397" y="0" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(( $F{SUM_WITH} +  $F{SUM_AJO} +  $F{SUM_FEE} + $F{SUM_ERO} )  -  ( $F{SUM_AJI} +  $F{SUM_ERI} ) ) -  $F{SUM_INT_CLOSE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="8766b282-da3c-46fd-a050-d7efc20114c9" x="478" y="0" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FORWARD_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="2ef460d4-dc4b-4ecd-9545-ec8a7be061e5" x="559" y="0" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_INT} - $F{SUM_INT_CLOSE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="2a11c544-01c9-4c55-a3a5-fee168a80ba2" x="640" y="0" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUM_TAX}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="f3a3063a-f683-419f-8955-b0545248e945" x="721" y="0" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FORWARD_BALANCE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="7d209a29-837b-4177-85ce-9e87746f09ef" x="0" y="0" width="235" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมทั้งหมด   มี   " + $V{count_deptno_all} + "   บัญชี"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="394e98ca-d790-4525-a422-9c7b9cff1bad" x="235" y="0" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_bal_new_all}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="de172687-84f0-4f9e-b82f-9b3fb40e9dcc" x="316" y="0" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_deposit_all}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="f2866ffe-075c-4358-8024-f80f2c71b14a" x="397" y="0" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_withdraw_all}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="939f38eb-49c0-4373-8265-7226c8b97cd4" x="478" y="0" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_balance_all}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="8a85e1f3-08e2-42cb-b3ed-0ade0f6dd0ca" x="559" y="0" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_int_all}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="14d9144a-ae58-4d23-9e45-cdd26ac212e8" x="640" y="0" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_tax_all}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="52b999e8-c45b-4923-aa4c-8f08093622e4" x="721" y="0" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_balance_all}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

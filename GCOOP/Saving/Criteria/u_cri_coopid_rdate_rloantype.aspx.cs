@@ -42,7 +42,6 @@ namespace Saving.Criteria
         {
             InitJsPostBack();
 
-
             if (IsPostBack)
             {
                 dw_criteria.RestoreContext();
@@ -58,7 +57,14 @@ namespace Saving.Criteria
                 DwUtil.RetrieveDDDW(dw_criteria, "select_coop", "criteria.pbl", state.SsCoopControl);
                 DwUtil.RetrieveDDDW(dw_criteria, "start_loantype", "criteria.pbl", state.SsCoopControl);
                 DwUtil.RetrieveDDDW(dw_criteria, "end_loantype", "criteria.pbl", state.SsCoopControl);
+                DwUtil.RetrieveDDDW(dw_criteria, "printer", "criteria.pbl", null);
                 dw_criteria.SetItemString(1, "select_coop", state.SsCoopId);
+
+                //ดึงค่าน้อยสุด และค่ามากสุด ของประเภทเงินกู้ มาเก็บไว้ในตัวแปร Array ชื่อ minmax
+                string[] minmax = ReportUtil.GetMinMaxLoantype();
+                dw_criteria.SetItemString(1, "start_loantype", minmax[0]);
+                dw_criteria.SetItemString(1, "end_loantype", minmax[1]);
+
                 tdw_criteria.Eng2ThaiAllRow();
             }
 
@@ -151,17 +157,20 @@ namespace Saving.Criteria
             //ส่งให้ ReportService สร้าง PDF ให้ {โดยปกติจะอยู่ใน C:\GCOOP\Saving\PDF\}.
             try
             {
-                String criteriaXML = lnv_helper.PopArgumentsXML();
-                //CoreSavingLibrary.WcfReport.ReportClient lws_report = wcf.Report;                
-                //this.pdf = lws_report.GetPDFURL(state.SsWsPass) + pdfFileName;
-                //String li_return = lws_report.RunWithID(state.SsWsPass, app, gid, rid, state.SsUsername, criteriaXML, pdfFileName);
-                //if (li_return == "true")
-                //{
-                //    HdOpenIFrame.Value = "True";
-                //}
+                //String criteriaXML = lnv_helper.PopArgumentsXML();
+                ////CoreSavingLibrary.WcfReport.ReportClient lws_report = wcf.Report;                
+                ////this.pdf = lws_report.GetPDFURL(state.SsWsPass) + pdfFileName;
+                ////String li_return = lws_report.RunWithID(state.SsWsPass, app, gid, rid, state.SsUsername, criteriaXML, pdfFileName);
+                ////if (li_return == "true")
+                ////{
+                ////    HdOpenIFrame.Value = "True";
+                ////}
 
 
+                //string printer = dw_criteria.GetItemString(1, "printer");
+                //outputProcess = WebUtil.runProcessingReport(state, app, gid, rid, criteriaXML, pdfFileName, printer);
                 string printer = dw_criteria.GetItemString(1, "printer");
+                String criteriaXML = lnv_helper.PopArgumentsXML();
                 outputProcess = WebUtil.runProcessingReport(state, app, gid, rid, criteriaXML, pdfFileName, printer);
 
             }
