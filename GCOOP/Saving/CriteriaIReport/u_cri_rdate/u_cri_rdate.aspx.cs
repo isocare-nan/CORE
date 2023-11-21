@@ -62,8 +62,8 @@ namespace Saving.CriteriaIReport.u_cri_rdate
 
             if (!IsPostBack)
             {
-                dsMain.DdCoopId();
-                //dsMain.DATA[0].year = WebUtil.GetAccyear(state.SsCoopControl, state.SsWorkDate);
+                dsMain.DATA[0].start_date = state.SsWorkDate;
+                dsMain.DATA[0].end_date = state.SsWorkDate;
             }
         }
 
@@ -74,19 +74,13 @@ namespace Saving.CriteriaIReport.u_cri_rdate
 
         public void RunReport()
         {
-            string as_coopid = dsMain.DATA[0].coop_id;
             DateTime date1 = dsMain.DATA[0].start_date;
             DateTime date2 = dsMain.DATA[0].end_date;
-            
-
             try
             {
                 iReportArgument arg = new iReportArgument();
-                //as_coopid ตัวแปรใน iReport
-                //arg.Add("as_coopid", iReportArgumentType.String, state.SsCoopId);
                 arg.Add("adtm_startdate", iReportArgumentType.Date, date1);
                 arg.Add("adtm_enddate", iReportArgumentType.Date, date2);
-                
                 iReportBuider report = new iReportBuider(this, arg);
                 report.Retrieve();
             }

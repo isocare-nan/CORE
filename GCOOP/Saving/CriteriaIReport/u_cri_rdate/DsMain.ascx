@@ -4,17 +4,6 @@
 <asp:FormView ID="FormView1" runat="server" DefaultMode="Edit">
     <EditItemTemplate>
         <table class="iReportDataSourceFormView">
-            <%--<tr>
-                <td width="30%">
-                    <div>
-                        <span>สาขา:</span>
-                    </div>
-                </td>
-                <td>
-                    <asp:DropDownList ID="coop_id" runat="server">
-                    </asp:DropDownList>
-                </td>
-            </tr>--%>
             <tr>
                 <td>
                     <div>
